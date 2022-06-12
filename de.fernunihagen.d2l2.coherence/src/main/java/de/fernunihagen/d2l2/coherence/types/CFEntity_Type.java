@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Sat Jun 04 01:35:38 CEST 2022 */
+/* First created by JCasGen Fri Jun 10 16:49:17 CEST 2022 */
 package de.fernunihagen.d2l2.coherence.types;
 
 import org.apache.uima.jcas.JCas;
@@ -13,36 +13,36 @@ import org.apache.uima.jcas.tcas.Annotation_Type;
 /** 
  * Updated by JCasGen Sat Jun 11 13:21:13 CEST 2022
  * @generated */
-public class CoreferenceEntity_Type extends Annotation_Type {
+public class CFEntity_Type extends Annotation_Type {
   /** @generated */
   @SuppressWarnings ("hiding")
-  public final static int typeIndexID = CoreferenceEntity.typeIndexID;
+  public final static int typeIndexID = CFEntity.typeIndexID;
   /** @generated 
      @modifiable */
   @SuppressWarnings ("hiding")
-  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
+  public final static boolean featOkTst = JCasRegistry.getFeatOkTst("de.fernunihagen.d2l2.coherence.types.CFEntity");
  
   /** @generated */
-  final Feature casFeat_id;
+  final Feature casFeat_sentenceIndex;
   /** @generated */
-  final int     casFeatCode_id;
+  final int     casFeatCode_sentenceIndex;
   /** @generated
    * @param addr low level Feature Structure reference
    * @return the feature value 
    */ 
-  public int getId(int addr) {
-        if (featOkTst && casFeat_id == null)
-      jcas.throwFeatMissing("id", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
-    return ll_cas.ll_getIntValue(addr, casFeatCode_id);
+  public int getSentenceIndex(int addr) {
+        if (featOkTst && casFeat_sentenceIndex == null)
+      jcas.throwFeatMissing("sentenceIndex", "de.fernunihagen.d2l2.coherence.types.CFEntity");
+    return ll_cas.ll_getIntValue(addr, casFeatCode_sentenceIndex);
   }
   /** @generated
    * @param addr low level Feature Structure reference
    * @param v value to set 
    */    
-  public void setId(int addr, int v) {
-        if (featOkTst && casFeat_id == null)
-      jcas.throwFeatMissing("id", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
-    ll_cas.ll_setIntValue(addr, casFeatCode_id, v);}
+  public void setSentenceIndex(int addr, int v) {
+        if (featOkTst && casFeat_sentenceIndex == null)
+      jcas.throwFeatMissing("sentenceIndex", "de.fernunihagen.d2l2.coherence.types.CFEntity");
+    ll_cas.ll_setIntValue(addr, casFeatCode_sentenceIndex, v);}
     
   
  
@@ -56,7 +56,7 @@ public class CoreferenceEntity_Type extends Annotation_Type {
    */ 
   public String getName(int addr) {
         if (featOkTst && casFeat_name == null)
-      jcas.throwFeatMissing("name", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
+      jcas.throwFeatMissing("name", "de.fernunihagen.d2l2.coherence.types.CFEntity");
     return ll_cas.ll_getStringValue(addr, casFeatCode_name);
   }
   /** @generated
@@ -65,7 +65,7 @@ public class CoreferenceEntity_Type extends Annotation_Type {
    */    
   public void setName(int addr, String v) {
         if (featOkTst && casFeat_name == null)
-      jcas.throwFeatMissing("name", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
+      jcas.throwFeatMissing("name", "de.fernunihagen.d2l2.coherence.types.CFEntity");
     ll_cas.ll_setStringValue(addr, casFeatCode_name, v);}
     
   
@@ -80,7 +80,7 @@ public class CoreferenceEntity_Type extends Annotation_Type {
    */ 
   public int getBeginPosition(int addr) {
         if (featOkTst && casFeat_beginPosition == null)
-      jcas.throwFeatMissing("beginPosition", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
+      jcas.throwFeatMissing("beginPosition", "de.fernunihagen.d2l2.coherence.types.CFEntity");
     return ll_cas.ll_getIntValue(addr, casFeatCode_beginPosition);
   }
   /** @generated
@@ -89,7 +89,7 @@ public class CoreferenceEntity_Type extends Annotation_Type {
    */    
   public void setBeginPosition(int addr, int v) {
         if (featOkTst && casFeat_beginPosition == null)
-      jcas.throwFeatMissing("beginPosition", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
+      jcas.throwFeatMissing("beginPosition", "de.fernunihagen.d2l2.coherence.types.CFEntity");
     ll_cas.ll_setIntValue(addr, casFeatCode_beginPosition, v);}
     
   
@@ -104,7 +104,7 @@ public class CoreferenceEntity_Type extends Annotation_Type {
    */ 
   public int getEndPosition(int addr) {
         if (featOkTst && casFeat_endPosition == null)
-      jcas.throwFeatMissing("endPosition", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
+      jcas.throwFeatMissing("endPosition", "de.fernunihagen.d2l2.coherence.types.CFEntity");
     return ll_cas.ll_getIntValue(addr, casFeatCode_endPosition);
   }
   /** @generated
@@ -113,32 +113,32 @@ public class CoreferenceEntity_Type extends Annotation_Type {
    */    
   public void setEndPosition(int addr, int v) {
         if (featOkTst && casFeat_endPosition == null)
-      jcas.throwFeatMissing("endPosition", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
+      jcas.throwFeatMissing("endPosition", "de.fernunihagen.d2l2.coherence.types.CFEntity");
     ll_cas.ll_setIntValue(addr, casFeatCode_endPosition, v);}
     
   
  
   /** @generated */
-  final Feature casFeat_firstMention;
+  final Feature casFeat_dependencyType;
   /** @generated */
-  final int     casFeatCode_firstMention;
+  final int     casFeatCode_dependencyType;
   /** @generated
    * @param addr low level Feature Structure reference
    * @return the feature value 
    */ 
-  public String getFirstMention(int addr) {
-        if (featOkTst && casFeat_firstMention == null)
-      jcas.throwFeatMissing("firstMention", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
-    return ll_cas.ll_getStringValue(addr, casFeatCode_firstMention);
+  public String getDependencyType(int addr) {
+        if (featOkTst && casFeat_dependencyType == null)
+      jcas.throwFeatMissing("dependencyType", "de.fernunihagen.d2l2.coherence.types.CFEntity");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_dependencyType);
   }
   /** @generated
    * @param addr low level Feature Structure reference
    * @param v value to set 
    */    
-  public void setFirstMention(int addr, String v) {
-        if (featOkTst && casFeat_firstMention == null)
-      jcas.throwFeatMissing("firstMention", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
-    ll_cas.ll_setStringValue(addr, casFeatCode_firstMention, v);}
+  public void setDependencyType(int addr, String v) {
+        if (featOkTst && casFeat_dependencyType == null)
+      jcas.throwFeatMissing("dependencyType", "de.fernunihagen.d2l2.coherence.types.CFEntity");
+    ll_cas.ll_setStringValue(addr, casFeatCode_dependencyType, v);}
     
   
 
@@ -149,13 +149,13 @@ public class CoreferenceEntity_Type extends Annotation_Type {
 	 * @param jcas JCas
 	 * @param casType Type 
 	 */
-  public CoreferenceEntity_Type(JCas jcas, Type casType) {
+  public CFEntity_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 
  
-    casFeat_id = jcas.getRequiredFeatureDE(casType, "id", "uima.cas.Integer", featOkTst);
-    casFeatCode_id  = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_id).getCode();
+    casFeat_sentenceIndex = jcas.getRequiredFeatureDE(casType, "sentenceIndex", "uima.cas.Integer", featOkTst);
+    casFeatCode_sentenceIndex  = (null == casFeat_sentenceIndex) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_sentenceIndex).getCode();
 
  
     casFeat_name = jcas.getRequiredFeatureDE(casType, "name", "uima.cas.String", featOkTst);
@@ -170,8 +170,8 @@ public class CoreferenceEntity_Type extends Annotation_Type {
     casFeatCode_endPosition  = (null == casFeat_endPosition) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_endPosition).getCode();
 
  
-    casFeat_firstMention = jcas.getRequiredFeatureDE(casType, "firstMention", "uima.cas.String", featOkTst);
-    casFeatCode_firstMention  = (null == casFeat_firstMention) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_firstMention).getCode();
+    casFeat_dependencyType = jcas.getRequiredFeatureDE(casType, "dependencyType", "uima.cas.String", featOkTst);
+    casFeatCode_dependencyType  = (null == casFeat_dependencyType) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_dependencyType).getCode();
 
   }
 }

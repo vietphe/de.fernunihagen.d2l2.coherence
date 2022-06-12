@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
-                	
+                    	
+  
+  
   
   
   
@@ -9,7 +11,9 @@
   
   
   <name>Escrito</name>
-                	
+                    	
+  
+  
   
   
   
@@ -18,7 +22,9 @@
   
   
   <description/>
-                	
+                    	
+  
+  
   
   
   
@@ -27,7 +33,9 @@
   
   
   <version>1.0</version>
-                	
+                    	
+  
+  
   
   
   
@@ -36,7 +44,9 @@
   
   
   <vendor/>
-                	
+                    	
+  
+  
   
   
   
@@ -45,7 +55,7 @@
   
   
   <types>
-                                	
+                                        	
 		
     
     
@@ -54,10 +64,256 @@
     
     
     
+    
+    
+    <typeDescription>
+                              
+      
+      
+      
+      <name>de.fernunihagen.d2l2.coherence.types.CoreferenceEntity</name>
+                              
+      
+      
+      
+      <description/>
+                              
+      
+      
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                              
+      
+      
+      
+      <features>
+                                        
+        
+        
+        
+        <featureDescription>
+                                                  
+          
+          
+          
+          <name>id</name>
+                                                  
+          
+          
+          
+          <description/>
+                                                  
+          
+          
+          
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                                                
+        
+        
+        
+        </featureDescription>
+                                        
+        
+        
+        
+        <featureDescription>
+                                                  
+          
+          
+          
+          <name>name</name>
+                                                  
+          
+          
+          
+          <description/>
+                                                  
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                
+        
+        
+        
+        </featureDescription>
+                                        
+        
+        
+        
+        <featureDescription>
+                                                  
+          
+          
+          
+          <name>beginPosition</name>
+                                                  
+          
+          
+          
+          <description/>
+                                                  
+          
+          
+          
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                                                
+        
+        
+        
+        </featureDescription>
+                                        
+        
+        
+        
+        <featureDescription>
+                                                  
+          
+          
+          
+          <name>endPosition</name>
+                                                  
+          
+          
+          
+          <description/>
+                                                  
+          
+          
+          
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                                                
+        
+        
+        
+        </featureDescription>
+                                        
+        
+        
+        
+        <featureDescription>
+                                                  
+          
+          
+          
+          <name>firstMention</name>
+                                                  
+          
+          
+          
+          <description/>
+                                                  
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                
+        
+        
+        
+        </featureDescription>
+                                      
+      
+      
+      
+      </features>
+                            
+    
+    
+    
+    </typeDescription>
+                    
+    
+    
+    
+    <typeDescription>
+                              
+      
+      
+      
+      <name>de.fernunihagen.d2l2.coherence.types.Transition</name>
+                              
+      
+      
+      
+      <description/>
+                              
+      
+      
+      
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+                              
+      
+      
+      
+      <features>
+                                        
+        
+        
+        
+        <featureDescription>
+                                                  
+          
+          
+          
+          <name>sentenceIndex</name>
+                                                  
+          
+          
+          
+          <description/>
+                                                  
+          
+          
+          
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+                                                
+        
+        
+        
+        </featureDescription>
+                                        
+        
+        
+        
+        <featureDescription>
+                                                  
+          
+          
+          
+          <name>name</name>
+                                                  
+          
+          
+          
+          <description/>
+                                                  
+          
+          
+          
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+                                                
+        
+        
+        
+        </featureDescription>
+                                      
+      
+      
+      
+      </features>
+                            
+    
+    
+    
+    </typeDescription>
+              
+  
+    
     <typeDescription>
                   
       
-      <name>de.fernunihagen.d2l2.coherence.types.CoreferenceEntity</name>
+      <name>de.fernunihagen.d2l2.coherence.types.CFEntity</name>
                   
       
       <description/>
@@ -72,7 +328,7 @@
         <featureDescription>
                               
           
-          <name>id</name>
+          <name>sentenceIndex</name>
                               
           
           <description/>
@@ -127,141 +383,26 @@
                             
         
         </featureDescription>
-                        
-        
+                      
+      
         <featureDescription>
-                              
-          
-          <name>firstMention</name>
-                              
-          
+                    
+          <name>dependencyType</name>
+                    
           <description/>
-                              
-          
+                    
           <rangeTypeName>uima.cas.String</rangeTypeName>
-                            
-        
-        </featureDescription>
-                      
-      
-      </features>
-                
-    
-    </typeDescription>
-            
-    
-    <typeDescription>
-                  
-      
-      <name>de.fernunihagen.d2l2.coherence.types.ForwardLookingCenter</name>
-                  
-      
-      <description/>
-                  
-      
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-                  
-      
-      <features>
-                        
-        
-        <featureDescription>
-                              
-          
-          <name>sentenceIndex</name>
-                              
-          
-          <description/>
-                              
-          
-          <rangeTypeName>uima.cas.Integer</rangeTypeName>
-                            
-        
-        </featureDescription>
-                        
-        
-        <featureDescription>
-                              
-          
-          <name>cf</name>
-                              
-          
-          <description/>
-                              
-          
-          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
-                            
-        
-        </featureDescription>
-                      
-      
-        <featureDescription>
-                    
-          <name>cfWithCoref</name>
-                    
-          <description/>
-                    
-          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
                   
         </featureDescription>
-      </features>
-                
-    
-    </typeDescription>
-            
-    
-    <typeDescription>
-                  
-      
-      <name>de.fernunihagen.d2l2.coherence.types.Transition</name>
-                  
-      
-      <description/>
-                  
-      
-      <supertypeName>uima.tcas.Annotation</supertypeName>
-                  
-      
-      <features>
-                        
-        
-        <featureDescription>
-                              
-          
-          <name>sentenceIndex</name>
-                              
-          
-          <description/>
-                              
-          
-          <rangeTypeName>uima.cas.Integer</rangeTypeName>
-                            
-        
-        </featureDescription>
-                        
-        
-        <featureDescription>
-                              
-          
-          <name>name</name>
-                              
-          
-          <description/>
-                              
-          
-          <rangeTypeName>uima.cas.String</rangeTypeName>
-                            
-        
-        </featureDescription>
-                      
-      
       </features>
                 
     
     </typeDescription>
       
   </types>
-                
+                    
+
+
 
 
 

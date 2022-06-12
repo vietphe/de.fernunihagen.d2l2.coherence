@@ -36,7 +36,7 @@ public class BaseExperiment {
 //		String param_Language = "de";
 		
 		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-		  CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath,CorefReader.PARAM_LANGUAGE, param_Language);
+				CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath,CorefReader.PARAM_LANGUAGE, param_Language);
 		AnalysisEngineDescription posTagger = createEngineDescription(CoreNlpPosTagger.class,
 				CoreNlpPosTagger.PARAM_LANGUAGE, param_Language);  								
 		AnalysisEngineDescription seg = createEngineDescription(CoreNlpSegmenter.class,
@@ -47,15 +47,12 @@ public class BaseExperiment {
 		AnalysisEngineDescription ner = createEngineDescription(CoreNlpNamedEntityRecognizer.class,
 				CoreNlpNamedEntityRecognizer.PARAM_LANGUAGE, param_Language);
 		AnalysisEngineDescription depparser = createEngineDescription(CoreNlpDependencyParser.class,CoreNlpDependencyParser.PARAM_LANGUAGE,param_Language,CoreNlpDependencyParser.PARAM_VARIANT,"ud");
-		AnalysisEngineDescription corefResolution = createEngineDescription(CoreNlpCoreferenceResolver.class);
-		AnalysisEngineDescription corefA = createEngineDescription(CoreferenceAnnotator.class);
-//		AnalysisEngineDescription forwardLookingCenters = createEngineDescription(ForwardLookingCenters.class,ForwardLookingCenters.PARAM_OUTPUT_FILE,outputPath);
-		AnalysisEngineDescription transitionAnnotator = createEngineDescription(TransitionAnnotator.class);
+		AnalysisEngineDescription coreNlpCoreferenceResolver = createEngineDescription(CoreNlpCoreferenceResolver.class);
+		AnalysisEngineDescription corefAnnotator = createEngineDescription(CoreferenceAnnotator.class);
+		AnalysisEngineDescription cFAnnotator = createEngineDescription(CFAnnotator.class);
+		AnalysisEngineDescription transitionAnnotator = createEngineDescription(TestClass.class);
 		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class);
 		
-		
-//		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class,Analyzer.PARAM_OUTPUT_FILE,outputPath);
-//		AnalysisEngineDescription stanfordAnnotator = createEngineDescription(StanfordCoreferenceUIMAAnnotator.class,StanfordCoreferenceUIMAAnnotator.PARAM_OUTPUT_FILE,outputPath);
 		SimplePipeline.runPipeline(reader, 
 				seg, 
 				posTagger,
@@ -63,11 +60,11 @@ public class BaseExperiment {
 				parser,
 				ner,
 				depparser,
-				corefResolution,
-				corefA,
+				coreNlpCoreferenceResolver,
+				corefAnnotator,
+				cFAnnotator,
 				transitionAnnotator,
 				analyzer
-//				forwardLookingCenters
 				);
 	}
 

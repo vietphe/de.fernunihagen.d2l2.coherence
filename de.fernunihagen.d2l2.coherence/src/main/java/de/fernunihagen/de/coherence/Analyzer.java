@@ -10,6 +10,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.fernunihagen.d2l2.coherence.types.CFEntity;
 import de.fernunihagen.d2l2.coherence.types.Transition;
 
 public class Analyzer extends JCasAnnotator_ImplBase {
@@ -28,10 +29,16 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		String essayText = aJCas.getDocumentText();
 //		System.out.println(essayText);
-		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class);
+		Collection<CFEntity> entities = JCasUtil.select(aJCas, CFEntity.class);
+		
+//		for (CFEntity entity : entities) {			  
+//			System.out.println(entity.getSentenceIndex()+ " "+ entity.getSentenceIndex()+" "+ entity.getName()); 
+//		} 
+		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
 		for (Transition transition : transitions) {
-			System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName());
+		  		System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName()); 
 		}
+		 
 		
 	}
 	@Override

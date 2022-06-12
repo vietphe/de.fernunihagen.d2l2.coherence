@@ -1,18 +1,18 @@
 package de.fernunihagen.d2l2.coherence.classes;
 
-public class CFEntity {
+public class ForwardLookingCenterEntity {
 	int begin;
 	int end;
 	String name;
 	String dependencyType;
-	public CFEntity(int begin, int end, String name, String dependencyType) {
+	public ForwardLookingCenterEntity(int begin, int end, String name, String dependencyType) {
 		super();
 		this.begin = begin;
 		this.end = end;
 		this.name = name;
 		this.dependencyType = dependencyType;
 	}
-	public CFEntity() {
+	public ForwardLookingCenterEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -40,6 +40,20 @@ public class CFEntity {
 	public void setDependencyType(String dependencyType) {
 		this.dependencyType = dependencyType;
 	}
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ForwardLookingCenterEntity entity = (ForwardLookingCenterEntity) o;
+        return  begin == entity.begin &&
+        		end == entity.end &&
+        		name.equals(entity.name) &&
+        		dependencyType.equals(entity.dependencyType);
+    }
 	
 	
 }

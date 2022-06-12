@@ -1,6 +1,5 @@
 package de.fernunihagen.de.coherence;
 
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,6 +14,7 @@ import java.util.StringTokenizer;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
+import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -22,26 +22,33 @@ import org.apache.uima.resource.ResourceInitializationException;
 import de.fernunihagen.d2l2.coherence.classes.ForwardLookingCenterEntity;
 import de.fernunihagen.d2l2.coherence.types.CFEntity;
 import de.fernunihagen.d2l2.coherence.types.CoreferenceEntity;
+import de.fernunihagen.d2l2.coherence.types.Transition;
+import de.tudarmstadt.ukp.dkpro.core.api.coref.type.CoreferenceLink;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
 
 
-public class CFAnnotator extends JCasAnnotator_ImplBase {
+public class TestClass extends JCasAnnotator_ImplBase {
+	
+	
 	@Override
 	public void initialize(final UimaContext context) throws ResourceInitializationException {
-	    super.initialize(context);    
+	    super.initialize(context);	    
 	}
 	
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
+		DocumentMetaData meta = JCasUtil.selectSingle(aJCas, DocumentMetaData.class);
+		String content = meta.getDocumentTitle();
+		System.out.println("---------Printing essay-----------: "+content);		
+		int sentenceIndex=1;
 		
-		int sentenceIndex=1;		
 		Collection<CoreferenceEntity> ces = JCasUtil.select(aJCas, CoreferenceEntity.class);
 		ArrayList<Object[]> CfAndCpList = new ArrayList<>();
 		for (final Sentence sentence : JCasUtil.select(aJCas, Sentence.class)) {
-//			System.out.println("----Sentence "+sentenceIndex +"---: "+sentence.getCoveredText() );
+			System.out.println("----Sentence "+sentenceIndex +"---: "+sentence.getCoveredText() );
 			ArrayList<ForwardLookingCenterEntity> possibleCandidate = new ArrayList<ForwardLookingCenterEntity>();
 			final Collection<Token> tokens = JCasUtil.selectCovered(aJCas, Token.class, sentence);
 			for (Token t: tokens) {
@@ -230,14 +237,102 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 					entity.setName(cfEntity.getName());
 					entity.setBeginPosition(cfEntity.getBegin());
 					entity.setEndPosition(cfEntity.getEnd());
-					entity.setDependencyType(cfEntity.getDependencyType());
 					entity.addToIndexes();
 				}
 				
 			}
+			
+			//Use Coreference Resolution
+			ArrayList<ForwardLookingCenterEntity> cFWithCoref = new ArrayList<>();
+			//copy CF list
+			for(ForwardLookingCenterEntity cfEntity: cF) {
+				cFWithCoref.add(cfEntity);
+			}
+			if(sentenceIndex != 1) {
+				for(ForwardLookingCenterEntity cFEntity: cFWithCoref) {
+					for(CoreferenceEntity coreferenceEntity: ces ) {
+						if((cFEntity.getBegin()== coreferenceEntity.getBeginPosition())&&(cFEntity.getEnd()==coreferenceEntity.getEndPosition())) {
+							cFEntity.setName(coreferenceEntity.getFirstMention());
+							
+						}
+					}
+				}
+			}
+			/*
+			 * System.out.print("CF with Coref = "); for(CFEntity cfEntity: cFWithCoref) {
+			 * System.out.print(cfEntity.getName()+" "); } System.out.println();
+			 */
+			
+			//get Cp from Cf
+			String cP = "";
+			cP = cF.get(0).getName();			
+			CfAndCpList.add(new Object[]{sentenceIndex,cF,cP});			
 			sentenceIndex++;
 		}
-	}	
+		
+		ArrayList<Object[]> CbAndCpList = new ArrayList<>();
+		//first sentence
+		CbAndCpList.add(new Object[] {1,(String)CfAndCpList.get(0)[2],"undefined"});
+		
+		for (int i = 1; i < CfAndCpList.size(); i++) {
+			String cB = "undefined";
+			String cP = (String) CfAndCpList.get(i)[2];			
+			for (ForwardLookingCenterEntity cfEntity: (ArrayList<ForwardLookingCenterEntity>)CfAndCpList.get(i)[1]) {
+				if(CfAndCpList.get(i-1)[2].equals(cfEntity.getName())) {
+					cB=cfEntity.getName();
+					cP = (String) CfAndCpList.get(i)[2];
+				}
+			}
+			 
+		
+			/*
+			 * for (int j = 0; j < CfAndCpList.size(); j++) {
+			 * if(CfAndCpList.get(j)[2]==CfAndCpList.get(i)[2]) { cB = (String)
+			 * CfAndCpList.get(j)[2]; cP = (String) CfAndCpList.get(j)[2]; } }
+			 */
+			CbAndCpList.add(new Object[] {i+1,cP,cB});			
+		}
+		for(Object[] o : CbAndCpList) {
+			System.out.print(o[0]+" ");
+			System.out.print(o[1]+" ");
+			System.out.print(o[2]+" ");
+			System.out.println();
+		}
+		
+		ArrayList<Object[]> CbAndCpListCopy = new ArrayList<>();
+		for (Object[] objects : CbAndCpList) {
+			CbAndCpListCopy.add(objects);
+		}
+		//calculate Transition
+//		ArrayList<Transition> transitions = new ArrayList<>();
+		ArrayList<String> transitions = new ArrayList<>();		
+		for (int i = 1; i < CbAndCpList.size(); i++) {
+			Transition transition = new Transition(aJCas);
+			transition.setSentenceIndex(i+1);
+			if(CbAndCpList.get(i-1)[2].equals("undefined")||CbAndCpList.get(i)[2].equals(CbAndCpList.get(i-1)[2])) {
+				if(CbAndCpList.get(i)[2].equals(CbAndCpList.get(i)[1])) {
+					transition.setName("Continue");
+					transitions.add("Continue");
+				}else {
+					transitions.add("Retain");
+					transition.setName("Retain");
+				}
+			}
+			
+			if(!CbAndCpList.get(i)[2].equals(CbAndCpList.get(i-1)[2])&&!CbAndCpList.get(i-1)[2].equals("undefined")) {
+				if(CbAndCpList.get(i)[2].equals(CbAndCpList.get(i)[1])) {
+					transitions.add("Smooth-Shift");
+					transition.setName("Smooth-Shift");
+				}else {
+					transitions.add("Rough-Shift");
+					transition.setName("Rough-Shift");
+				}
+			}
+			transition.addToIndexes();
+		}
+
+	}
+		
 	public void destroy() {
 		// TODO Auto-generated method stub
 		super.destroy();
@@ -245,7 +340,6 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 		
 		
 	}
-  
 }
 
 

@@ -34,7 +34,6 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
 		for (CoreferenceChain coreferenceChain : corefs1) {
 			corefs.add(coreferenceChain);
 		}
-		
 		for (int i = 0; i < corefs.size(); i++) {
 			//reads only chains that have more than 2 elements
 			if(corefs.get(i).getFirst().getNext()!=null) {
