@@ -59,7 +59,6 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 //				System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());
 			}
 			final Collection<Dependency> dependencies = JCasUtil.selectCovered(aJCas, Dependency.class, sentence);
-			
 			//create a list of forward-looking centers
 			ArrayList<ForwardLookingCenterEntity> forwardLookingCenters = new ArrayList<>();
 			//get Dependency Type
@@ -141,7 +140,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 					}
 				}
 			}
-			ForwardLookingCenterEntity cfe = new ForwardLookingCenterEntity(begin, end, name, dependencyTypeOfNER);			
+			ForwardLookingCenterEntity cfe = new ForwardLookingCenterEntity(begin, end, name, dependencyTypeOfNER+"NER");			
 			//add the new solved CFEntity to forwardLookingCenters
 			forwardLookingCenters.add(cfe);
 			
@@ -185,8 +184,9 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				} 
 			}
 			//add dependency type for all entities in listConj
+			//TODO: remove #
 			for (ForwardLookingCenterEntity e : listConj) { 
-				e.setDependencyType(dependencyTypeForConj);			
+				e.setDependencyType(dependencyTypeForConj+"#");			
 			} 
 			
 			for (ForwardLookingCenterEntity cfe2 : forwardLookingCentersCopie) { 

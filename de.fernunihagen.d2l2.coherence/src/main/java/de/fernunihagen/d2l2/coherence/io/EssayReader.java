@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -57,6 +58,8 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 		try {
 			inputFileURL = ResourceUtils.resolveLocation(inputFileString, this, aContext);
 			File file = new File(inputFileString);
+			//UTF-8 for German
+			Charset inputCharset = Charset.forName("ISO-8859-1");
 			File[] fileArray = file.listFiles(new FilenameFilter() {
 				public boolean accept(File dir, String name) {
 					return name.indexOf(".txt") != -1;
@@ -64,7 +67,7 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 			});
 			for (File f : fileArray) {
 				String id = f.getName();
-				String text = cleanString(String.join(" ", FileUtils.readLines(f)));
+				String text = cleanString(String.join(" ", FileUtils.readLines(f,inputCharset)));
 				if (text.startsWith("missing data") || text.equals("")) {
 					continue;
 				}
