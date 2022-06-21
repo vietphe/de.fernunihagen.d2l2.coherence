@@ -12,6 +12,7 @@ import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import de.fernunihagen.d2l2.coherence.io.CorefReader;
+import de.fernunihagen.d2l2.coherence.io.EssayReader;
 import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpCoreferenceResolver;
 import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpDependencyParser;
 import de.tudarmstadt.ukp.dkpro.core.corenlp.CoreNlpLemmatizer;
@@ -30,13 +31,16 @@ public class BaseExperiment {
 	private static void preprocess() throws ResourceInitializationException, UIMAException, IOException {
 
 		// TODO: adjust paths and param_Language 
-		String documentPath ="resources/Example.csv";
+		String documentPathCSV ="resources/Example.csv";
+		String documentPathTxt ="newresources/";
 		String outputPath = "D:\\HIWI\\CF\\output.txt";
 		String param_Language = "en";
 //		String param_Language = "de";
 		
-		CollectionReaderDescription reader = CollectionReaderFactory.createReaderDescription(
-				CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPath,CorefReader.PARAM_LANGUAGE, param_Language);
+		CollectionReaderDescription csvReader = CollectionReaderFactory.createReaderDescription(
+				CorefReader.class, CorefReader.PARAM_INPUT_FILE, documentPathCSV,CorefReader.PARAM_LANGUAGE, param_Language);
+		CollectionReaderDescription txtReader = CollectionReaderFactory.createReaderDescription(
+				EssayReader.class, EssayReader.PARAM_INPUT_FILE, documentPathTxt,EssayReader.PARAM_LANGUAGE, param_Language);
 		AnalysisEngineDescription posTagger = createEngineDescription(CoreNlpPosTagger.class,
 				CoreNlpPosTagger.PARAM_LANGUAGE, param_Language);  								
 		AnalysisEngineDescription seg = createEngineDescription(CoreNlpSegmenter.class,
@@ -50,10 +54,10 @@ public class BaseExperiment {
 		AnalysisEngineDescription coreNlpCoreferenceResolver = createEngineDescription(CoreNlpCoreferenceResolver.class);
 		AnalysisEngineDescription corefAnnotator = createEngineDescription(CoreferenceAnnotator.class);
 		AnalysisEngineDescription cFAnnotator = createEngineDescription(CFAnnotator.class);
-		AnalysisEngineDescription transitionAnnotator = createEngineDescription(TestClass.class);
+		AnalysisEngineDescription transitionAnnotator = createEngineDescription(TransitionAnnotator.class);
 		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class);
 		
-		SimplePipeline.runPipeline(reader, 
+		SimplePipeline.runPipeline(txtReader, 
 				seg, 
 				posTagger,
 				lemma,
@@ -61,9 +65,9 @@ public class BaseExperiment {
 				ner,
 				depparser,
 				coreNlpCoreferenceResolver,
-				corefAnnotator,
 				cFAnnotator,
-				transitionAnnotator,
+				corefAnnotator,				
+//				transitionAnnotator,
 				analyzer
 				);
 	}

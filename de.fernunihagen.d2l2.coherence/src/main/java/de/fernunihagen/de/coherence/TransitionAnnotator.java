@@ -43,21 +43,17 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 	
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		
+		String essayText = aJCas.getDocumentText();
+		System.out.println("---Printing essay: "+essayText);
 		Collection<CoreferenceEntity> ces = JCasUtil.select(aJCas, CoreferenceEntity.class);
-		for (CoreferenceEntity entity : ces) {
-			System.out.println(entity.getName()+" "+entity.getFirstMention()+" "+entity.getBeginPosition());
-		}
 		Collection<CFEntity> cfes = JCasUtil.select(aJCas, CFEntity.class);
 		
 		//Use Coreference Resolution
-		ArrayList<CFEntity> cFWithCoref = new ArrayList<>();		
 		for(CFEntity cFEntity: cfes) {
 			if(cFEntity.getSentenceIndex()!=1) {
 				for(CoreferenceEntity coreferenceEntity: ces ) {
 					if((cFEntity.getBeginPosition()== coreferenceEntity.getBeginPosition())&&(cFEntity.getEndPosition()==coreferenceEntity.getEndPosition())) {
-						cFEntity.setName(coreferenceEntity.getFirstMention());
-						
+						cFEntity.setName(coreferenceEntity.getFirstMention());						
 					}
 				}
 			}
@@ -122,12 +118,12 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			 
 			CpAndCbList.add(new Object[] {i+1,cP,cB});			
 		}
-		for(Object[] o : CpAndCbList) {
-			System.out.print(o[0]+" ");
-			System.out.print(o[1]+" ");
-			System.out.print(o[2]+" ");
-			System.out.println();
-		}
+//		for(Object[] o : CpAndCbList) {
+//			System.out.print(o[0]+" ");
+//			System.out.print(o[1]+" ");
+//			System.out.print(o[2]+" ");
+//			System.out.println();
+//		}
 		ArrayList<String> transitions = new ArrayList<>();		
 		for (int i = 1; i < CpAndCbList.size(); i++) {
 			Transition transition = new Transition(aJCas);
@@ -153,14 +149,6 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			}
 			transition.addToIndexes();
 		}
-	}
-		
-	public void destroy() {
-		// TODO Auto-generated method stub
-		super.destroy();
-//		export(output.toString(), outputFile);
-		
-		
 	}
 }
 
