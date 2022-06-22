@@ -62,17 +62,6 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 		for (CFEntity e : cfEntities) {
 			cFNotMatchWithCoref.add(e);
 		}
-		//printing CFs
-		for (int i = 1; i <= numOfSentences; i++) {
-			System.out.print("CF of ["+i+"]: ");
-			for (CFEntity e : cFNotMatchWithCoref) {
-				if(e.getSentenceIndex() == i) {
-					System.out.print(e.getName()+" "+e.getDependencyType()+"-");
-				}
-			}
-			System.out.println();
-		}
-		
 		ArrayList<CoreferenceEntity> corefNotMatchWithCF = new ArrayList<>();
 		for (CoreferenceEntity e : coreferenceEntities) {
 			corefNotMatchWithCF.add(e);
@@ -88,8 +77,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				}
 				
 			}
-		}
-		
+		}		
 		for (CoreferenceEntity e : corefMatchWithCF) {
 			for (CoreferenceEntity e1 : coreferenceEntities) {
 				if(e.getName().equals(e1.getName()) && e.getBeginPosition() == e1.getBeginPosition()) {
@@ -112,12 +100,12 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 		for (CFEntity e : cFNotMatchWithCoref) {
 //			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
 		}
+		System.out.println("Transitions: ");
 		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
 		for (Transition transition : transitions) {
 		  		System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName()); 
 		}
-		System.out.println();
-		
+		System.out.println();		
 		System.out.println("Spezialfall mit NER: "+ numOfNER);
 		System.out.println("Spezialfall mit And/Or: "+ numOfAndOr);
 		System.out.println("Spezialfall mit Nebensatz: "+ numOfSubClause);
