@@ -125,11 +125,11 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			ArrayList<CFEntity> cFOfActualSentence = cfeMap.get(i+1);
 			ArrayList<CFEntity> cFOfPreviousSentence = cfeMap.get(i);
 			innerloop1:
-			for (CFEntity e1 : cFOfActualSentence) {
+			for (CFEntity e1 : cFOfPreviousSentence) {
 				innerloop2:
-				for (CFEntity e2 : cFOfPreviousSentence) {
+				for (CFEntity e2 : cFOfActualSentence) {
 					if (e1.getName().equals(e2.getName())) {
-						cB = e1.getName();
+						cB = e2.getName();
 						break innerloop1;
 					}
 				}
