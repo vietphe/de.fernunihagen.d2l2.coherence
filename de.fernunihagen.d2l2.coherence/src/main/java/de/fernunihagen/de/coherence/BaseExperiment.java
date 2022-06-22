@@ -67,7 +67,7 @@ public class BaseExperiment {
 				coreNlpCoreferenceResolver,
 				cFAnnotator,
 				corefAnnotator,				
-//				transitionAnnotator,
+				transitionAnnotator,
 				analyzer
 				);
 	}

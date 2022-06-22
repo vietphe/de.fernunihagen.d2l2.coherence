@@ -23,6 +23,7 @@ import de.fernunihagen.d2l2.coherence.classes.ForwardLookingCenterEntity;
 import de.fernunihagen.d2l2.coherence.types.CFEntity;
 import de.fernunihagen.d2l2.coherence.types.CoreferenceEntity;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
+import de.tudarmstadt.ukp.dkpro.core.api.ner.type.NamedEntity;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
@@ -48,11 +49,11 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			for (Token t: tokens) {
 				if(t.getPos().getCoarseValue()!=null) {
 					if(t.getPos().getCoarseValue().equals("PROPN")||t.getPos().getCoarseValue().equals("NOUN")||t.getPos().getCoarseValue().equals("PRON")) {
-						ForwardLookingCenterEntity cfe = new ForwardLookingCenterEntity();
-						cfe.setName(t.getCoveredText());
-						cfe.setBegin(t.getBegin());
-						cfe.setEnd(t.getEnd());
-						possibleCandidate.add(cfe);
+						ForwardLookingCenterEntity e = new ForwardLookingCenterEntity();
+						e.setName(t.getCoveredText());
+						e.setBegin(t.getBegin());
+						e.setEnd(t.getEnd());
+						possibleCandidate.add(e);
 //						System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());				
 					}
 				}
@@ -62,42 +63,46 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			//create a list of forward-looking centers
 			ArrayList<ForwardLookingCenterEntity> forwardLookingCenters = new ArrayList<>();
 			//get Dependency Type
-			for(ForwardLookingCenterEntity cfe : possibleCandidate) {
+			for(ForwardLookingCenterEntity e : possibleCandidate) {
 				for (Dependency dep : dependencies){
 					if(!dep.getDependencyType().equals("compound")&&!dep.getDependencyType().equals("punct")) {
-						if(cfe.getName().equals(dep.getDependent().getCoveredText())&&cfe.getBegin()==dep.getDependent().getBegin()) {
-							cfe.setDependencyType(dep.getDependencyType());
-							forwardLookingCenters.add(cfe);
+						if(e.getName().equals(dep.getDependent().getCoveredText())&&e.getBegin()==dep.getDependent().getBegin()) {
+							e.setDependencyType(dep.getDependencyType());
+							forwardLookingCenters.add(e);
 							break;
 						}				
 					}
 					
 				}	
-			}		
+			}
 			//Named Entity bind together(90-136)
 			ArrayList<ForwardLookingCenterEntity> listNER = new ArrayList<>();
-			 
-			for (Dependency dep : dependencies){
-				if(!dep.getDependencyType().equals("punct")) {					
-					if(dep.getDependencyType().equals("compound")) {						
-						ForwardLookingCenterEntity cfe2 = new ForwardLookingCenterEntity();
-						cfe2.setName(dep.getGovernor().getCoveredText());
-						cfe2.setBegin(dep.getGovernor().getBegin());
-						cfe2.setEnd(dep.getGovernor().getEnd());
-						cfe2.setDependencyType("");
-						if (!listNER.contains(cfe2)) {
-							listNER.add(cfe2);
-						}
-						
-						ForwardLookingCenterEntity cfe1 = new ForwardLookingCenterEntity();
-						cfe1.setName(dep.getDependent().getCoveredText());
-						cfe1.setBegin(dep.getDependent().getBegin());
-						cfe1.setEnd(dep.getDependent().getEnd());
-						cfe1.setDependencyType("");
-						if (!listNER.contains(cfe1)) {
-							listNER.add(cfe1);
-						}
-					}			 
+			final Collection<NamedEntity> ners = JCasUtil.selectCovered(aJCas, NamedEntity.class, sentence);
+			ArrayList<String> namedEntitys = new ArrayList<>();
+			for (NamedEntity ner : ners) {
+				if (!ner.getValue().equals("NUMBER")) {
+//					System.out.println(ner.getCoveredText()+ " " +ner.getValue());
+					namedEntitys.add(ner.getCoveredText());
+				}				
+			}
+			for (Dependency dep : dependencies){			
+				if(dep.getDependencyType().equals("compound")) {						
+					ForwardLookingCenterEntity cfe2 = new ForwardLookingCenterEntity();
+					cfe2.setName(dep.getGovernor().getCoveredText());
+					cfe2.setBegin(dep.getGovernor().getBegin());
+					cfe2.setEnd(dep.getGovernor().getEnd());
+					cfe2.setDependencyType("");
+					if (!listNER.contains(cfe2) && namedEntitys.contains(cfe2.getName())) {
+						listNER.add(cfe2);
+					}						
+					ForwardLookingCenterEntity cfe1 = new ForwardLookingCenterEntity();
+					cfe1.setName(dep.getDependent().getCoveredText());
+					cfe1.setBegin(dep.getDependent().getBegin());
+					cfe1.setEnd(dep.getDependent().getEnd());
+					cfe1.setDependencyType("");
+					if (!listNER.contains(cfe1) && namedEntitys.contains(cfe1.getName())) {
+						listNER.add(cfe1);
+					}								 
 //					System.out.println(dep.getGovernor().getCoveredText() + " " + dep.getDependencyType() + " " + dep.getDependent().getCoveredText());	
 				}
 					
@@ -108,7 +113,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				begin = listNER.get(1).getBegin();
 				end = listNER.get(0).getEnd();
 			}
-			//get dependencyType for NER
+			//dependencyType for new NER is dependency type of the first element in listNER
 			String dependencyTypeOfNER = "";
 			outerloop1:
 			for (Dependency dep : dependencies){
@@ -129,19 +134,20 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				name += listNER.get(0).getName();
 			}			
 			ArrayList<ForwardLookingCenterEntity> forwardLookingCentersCopie = new ArrayList<>();
-			for (ForwardLookingCenterEntity cfe : forwardLookingCenters) {
-				forwardLookingCentersCopie.add(cfe);
+			for (ForwardLookingCenterEntity e : forwardLookingCenters) {
+				forwardLookingCentersCopie.add(e);
 			}
-			//remove CFEntity with false dependencyType in forwardLookingCenters
-			for (ForwardLookingCenterEntity cfe : forwardLookingCentersCopie) {
-				for (ForwardLookingCenterEntity cfe2 : listNER) {
-					if (cfe.getName().equals(cfe2.getName()) && cfe.getBegin() == cfe2.getBegin()) {
-						forwardLookingCenters.remove(cfe);
+			//remove unsolved NER entity in forwardLookingCenters
+			for (ForwardLookingCenterEntity e1 : forwardLookingCentersCopie) {
+				for (ForwardLookingCenterEntity e2 : listNER) {
+					if (e1.getName().equals(e2.getName()) && e1.getBegin() == e2.getBegin()) {
+						forwardLookingCenters.remove(e1);
 					}
 				}
 			}
+			//TODO: sentences that have  more than one NER !!! e.g.: Viet Phe lives in Mülheim an der Ruhr.
 			ForwardLookingCenterEntity cfe = new ForwardLookingCenterEntity(begin, end, name, dependencyTypeOfNER+"NER");			
-			//add the new solved CFEntity to forwardLookingCenters
+			//add the new solved NER entity to forwardLookingCenters
 			forwardLookingCenters.add(cfe);
 			
 			
@@ -151,7 +157,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			for (ForwardLookingCenterEntity entity : forwardLookingCenters) {
 				forwardlookingCentersString.add(entity.getName());
 			}
-			
+			//find entities that match each other with "and" and "or" and add them to listConj
 			ArrayList<ForwardLookingCenterEntity> listConj = new ArrayList<>();
 			for (Dependency dep : dependencies){
 				if (!dep.getDependencyType().equals("punct")) {		  
@@ -171,7 +177,8 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 					} 
 				} 
 			}
-
+			
+			//dependency type for all entities in listConj should be the dependency type of the first element in listConj
 			String dependencyTypeForConj = ""; 
 			ForwardLookingCenterEntity firstEntityOfConj = new ForwardLookingCenterEntity() ;
 			if (!listConj.isEmpty()) {
@@ -184,9 +191,8 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				} 
 			}
 			//add dependency type for all entities in listConj
-			//TODO: remove #
 			for (ForwardLookingCenterEntity e : listConj) { 
-				e.setDependencyType(dependencyTypeForConj+"#");			
+				e.setDependencyType(dependencyTypeForConj+"CONJ");			
 			} 
 			
 			for (ForwardLookingCenterEntity cfe2 : forwardLookingCentersCopie) { 
@@ -232,13 +238,13 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			ArrayList<ForwardLookingCenterEntity> possibleSubject = new ArrayList<>();
 			ArrayList<ForwardLookingCenterEntity> possibleObject = new ArrayList<>();
 			ArrayList<ForwardLookingCenterEntity> possibleOthers = new ArrayList<>();
-			for(ForwardLookingCenterEntity cfe2 : forwardLookingCenters) {
-				if(cfe2.getDependencyType().contains("subj")) {
-					possibleSubject.add(cfe2);
-				}else if(cfe2.getDependencyType().contains("obj")) {
-					possibleObject.add(cfe2);	
+			for(ForwardLookingCenterEntity e : forwardLookingCenters) {
+				if(e.getDependencyType().contains("subj")) {
+					possibleSubject.add(e);
+				}else if(e.getDependencyType().contains("obj")) {
+					possibleObject.add(e);	
 				}else{
-					possibleOthers.add(cfe2);				
+					possibleOthers.add(e);				
 				}
 			}
 			//CF of current sentence in correct order
@@ -249,9 +255,9 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			
 			//remove duplicate entity in cF
 			ArrayList<ForwardLookingCenterEntity> cFFinal = new ArrayList<>();
-			for(ForwardLookingCenterEntity centerEntity : cF) {
-				if(!cFFinal.contains(centerEntity)) {
-					cFFinal.add(centerEntity);
+			for(ForwardLookingCenterEntity e : cF) {
+				if(!cFFinal.contains(e)) {
+					cFFinal.add(e);
 				}
 			}
 			

@@ -78,45 +78,36 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			}
 			cfeMap.put(i, aList);
 		}
-		for (Map.Entry<Integer, ArrayList<CFEntity>> entry : cfeMap.entrySet()) {
-			Integer key = entry.getKey();
-			ArrayList<CFEntity> val = entry.getValue();
+//		for (Map.Entry<Integer, ArrayList<CFEntity>> entry : cfeMap.entrySet()) {
+//			Integer key = entry.getKey();
+//			ArrayList<CFEntity> val = entry.getValue();
 //			System.out.print(key);
-			for (CFEntity cfEntity : val) {
+//			for (CFEntity cfEntity : val) {
 //				System.out.print(" "+cfEntity.getName());
-			}
+//			}
 //			System.out.println();
-			
-		}
-		
-		// get CP for every sentence
-		ArrayList<CFEntity> cPList = new ArrayList<>();
-		int temp = 1;
-		for (CFEntity entity : cfes) {
-			if (entity.getSentenceIndex()==temp) {
-				cPList.add(entity);
-				temp++;
-				continue;
-			}
-		}
-		ArrayList<Object[]> CfAndCpList = new ArrayList<>();
-		for (int i = 1; i < cfeMap.size()+1; i++) {
-			CfAndCpList.add(new Object[] {i,cfeMap.get(i),cfeMap.get(i).get(0).getName()});
-		}	
+//			
+//		}
 		ArrayList<Object[]> CpAndCbList = new ArrayList<>();
-		//add Cp and Cp of first sentence to the list
+		//add Cp and Cb for first sentence
 		CpAndCbList.add(new Object[] {1,cfeMap.get(1).get(0).getName(),"undefined"});
-		for (int i = 1; i < CfAndCpList.size(); i++) {
+		//Logic for calculation of Cbs
+		for (int i = 1; i < cfeMap.size(); i++) {
 			String cB = "undefined";
-			String cP = (String) CfAndCpList.get(i)[2];			
-			for (CFEntity cfEntity: (ArrayList<CFEntity>)CfAndCpList.get(i)[1]) {
-				if(CfAndCpList.get(i-1)[2].equals(cfEntity.getName())) {
-					cB=cfEntity.getName();
-					cP = (String) CfAndCpList.get(i)[2];
+			String cP = cfeMap.get(i+1).get(0).getName();
+			ArrayList<CFEntity> cFOfActualSentence = cfeMap.get(i+1);
+			ArrayList<CFEntity> cFOfPreviousSentence = cfeMap.get(i);
+			innerloop1:
+			for (CFEntity e1 : cFOfActualSentence) {
+				innerloop2:
+				for (CFEntity e2 : cFOfPreviousSentence) {
+					if (e1.getName().equals(e2.getName())) {
+						cB = e1.getName();
+						break innerloop1;
+					}
 				}
 			}
-			 
-			CpAndCbList.add(new Object[] {i+1,cP,cB});			
+			CpAndCbList.add(new Object[] {i+1,cP,cB});
 		}
 //		for(Object[] o : CpAndCbList) {
 //			System.out.print(o[0]+" ");

@@ -32,19 +32,20 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		String essayText = aJCas.getDocumentText();
-		System.out.println(essayText);
+//		System.out.println(essayText);
 		Collection<Sentence> sentences = JCasUtil.select(aJCas, Sentence.class);
 		int numOfSentences = sentences.size();
 		Collection<CFEntity> cfEntities = JCasUtil.select(aJCas, CFEntity.class);
+		
+		//calculate number of 3 Spezialfälle
 		int numOfNER = 0;
 		int numOfAndOr = 0;
-		int numOfSubClause = 0;
-		
+		int numOfSubClause = 0;		
 		for (CFEntity entity : cfEntities) {
 			if (entity.getDependencyType().contains("NER")) {
 				numOfNER +=1;
 			}
-			if (entity.getDependencyType().contains("#")) {
+			if (entity.getDependencyType().contains("CONJ")) {
 				numOfAndOr +=1;
 			}
 			if (entity.getDependencyType().contains("wrongNsub")) {
@@ -52,14 +53,11 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 			}
 //			System.out.println("CF: "+entity.getSentenceIndex()+" "+ entity.getName() + " "+entity.getBeginPosition()+":"+entity.getEndPosition()+" "+entity.getDependencyType()); 
 		} 
+		
 		Collection<CoreferenceEntity> coreferenceEntities = JCasUtil.select(aJCas, CoreferenceEntity.class);
 		for (CoreferenceEntity c: coreferenceEntities) {
 //			System.out.println("Coref: "+c.getName()+" " +c.getBeginPosition()+":"+c.getEndPosition() +" --> "+c.getFirstMention());
 		}		
-		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
-		for (Transition transition : transitions) {
-		  		System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName()); 
-		}
 		ArrayList<CFEntity> cFNotMatchWithCoref = new ArrayList<>();
 		for (CFEntity e : cfEntities) {
 			cFNotMatchWithCoref.add(e);
@@ -69,7 +67,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 			System.out.print("CF of ["+i+"]: ");
 			for (CFEntity e : cFNotMatchWithCoref) {
 				if(e.getSentenceIndex() == i) {
-					System.out.print(e.getName()+"-");
+					System.out.print(e.getName()+" "+e.getDependencyType()+"-");
 				}
 			}
 			System.out.println();
@@ -91,9 +89,6 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				
 			}
 		}
-		for (CoreferenceEntity e : corefMatchWithCF) {
-//			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "->" + e.getFirstMention() );
-		}
 		
 		for (CoreferenceEntity e : corefMatchWithCF) {
 			for (CoreferenceEntity e1 : coreferenceEntities) {
@@ -102,9 +97,9 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				}
 			}
 		}
-		System.out.println("---CoreferenceEntitys do not match CFEntitys---: "+ corefNotMatchWithCF.size()+" out of "+coreferenceEntities.size()+".");
+//		System.out.println("---CoreferenceEntitys do not match CFEntitys---: "+ corefNotMatchWithCF.size()+" out of "+coreferenceEntities.size()+".");
 		for (CoreferenceEntity e : corefNotMatchWithCF) {
-			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getFirstMention() );
+//			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getFirstMention() );
 		}
 		for (CFEntity  e1 : cFMatchWithCoref) {
 			for (CFEntity e2 : cfEntities) {
@@ -113,10 +108,15 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				}
 			}
 		}
-		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
+//		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
 		for (CFEntity e : cFNotMatchWithCoref) {
-			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
+//			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
 		}
+		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
+		for (Transition transition : transitions) {
+		  		System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName()); 
+		}
+		System.out.println();
 		
 		System.out.println("Spezialfall mit NER: "+ numOfNER);
 		System.out.println("Spezialfall mit And/Or: "+ numOfAndOr);
