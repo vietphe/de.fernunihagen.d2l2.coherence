@@ -28,6 +28,9 @@ public class BaseExperiment {
 		preprocess();
 
 	}
+	public static void binCasWriter() {
+		
+	}
 	private static void preprocess() throws ResourceInitializationException, UIMAException, IOException {
 
 		// TODO: adjust paths and param_Language 

@@ -24,12 +24,6 @@ import org.apache.uima.util.ProgressImpl;
 import de.tudarmstadt.ukp.dkpro.core.api.metadata.type.DocumentMetaData;
 import de.tudarmstadt.ukp.dkpro.core.api.resources.ResourceUtils;
 
-
-/*
- * read feedbacks, questions, target answers and answers from excel file
- * 
- */
-
 public class CorefReader extends JCasCollectionReader_ImplBase {
 
 	public static final String PARAM_INPUT_FILE = "InputFile";

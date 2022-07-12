@@ -50,17 +50,17 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 		Collection<Sentence> sentences = JCasUtil.select(aJCas, Sentence.class);
 		int numOfSentences = sentences.size();
 		//printing CFs
-		System.out.println("CFs: ");
-		for (int i = 1; i <= numOfSentences; i++) {
-			System.out.print("CF of ["+i+"]: ");
-			for (CFEntity e : cfes) {
-				if(e.getSentenceIndex() == i) {
-					System.out.print(e.getName()+" ("+e.getDependencyType()+") - ");
-				}
-			}
-			System.out.println();
-		}
-		System.out.println();
+//		System.out.println("CFs: ");
+//		for (int i = 1; i <= numOfSentences; i++) {
+//			System.out.print("CF of ["+i+"]: ");
+//			for (CFEntity e : cfes) {
+//				if(e.getSentenceIndex() == i) {
+//					System.out.print(e.getName()+" ("+e.getDependencyType()+")"+" - ");
+//				}
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
 
 		//Use Coreference Resolution
 		for(CFEntity cFEntity: cfes) {
@@ -74,18 +74,18 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			
 		}
 		//printing CFs with Coref
-		System.out.println("CFs with Coreference: ");
-		for (int i = 1; i <= numOfSentences; i++) {
-			System.out.print("CF of ["+i+"]: ");
-			for (CFEntity e : cfes) {
-				if(e.getSentenceIndex() == i) {
-					System.out.print(e.getName()+" ("+e.getDependencyType()+") - ");
-				}
-			}
-			System.out.println();
-		}
-		System.out.println();
-		
+//		System.out.println("CFs with Coreference: ");
+//		for (int i = 1; i <= numOfSentences; i++) {
+//			System.out.print("CF of ["+i+"]: ");
+//			for (CFEntity e : cfes) {
+//				if(e.getSentenceIndex() == i) {
+//					System.out.print(e.getName()+" ("+e.getDependencyType()+")"+" - ");
+//				}
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
+//		
 		//convert cfes to ArrayList
 		ArrayList<CFEntity> cfesList = new ArrayList<>();
 		for (CFEntity entity : cfes) {
@@ -136,14 +136,14 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			}
 			CpAndCbList.add(new Object[] {i+1,cP,cB});
 		}
-		System.out.println("Cp and Cb: ");
-		for(Object[] o : CpAndCbList) {
-			System.out.print("["+o[0]+"]: ");
-			System.out.print(o[1]+" ");
-			System.out.print(o[2]+" ");
-			System.out.println();
-		}
-		System.out.println();
+//		System.out.println("Cp and Cb: ");
+//		for(Object[] o : CpAndCbList) {
+//			System.out.print("["+o[0]+"]: ");
+//			System.out.print(o[1]+" ");
+//			System.out.print(o[2]+" ");
+//			System.out.println();
+//		}
+//		System.out.println();
 		ArrayList<String> transitions = new ArrayList<>();		
 		for (int i = 1; i < CpAndCbList.size(); i++) {
 			Transition transition = new Transition(aJCas);

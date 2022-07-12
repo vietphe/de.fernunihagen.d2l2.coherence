@@ -48,7 +48,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 			if (entity.getDependencyType().contains("CONJ")) {
 				numOfAndOr +=1;
 			}
-			if (entity.getDependencyType().contains("wrongNsub")) {
+			if (entity.getDependencyType().contains("SUBORDINATE")) {
 				numOfSubClause +=1;
 			}
 //			System.out.println("CF: "+entity.getSentenceIndex()+" "+ entity.getName() + " "+entity.getBeginPosition()+":"+entity.getEndPosition()+" "+entity.getDependencyType()); 
@@ -86,9 +86,9 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 			}
 		}
 //		System.out.println("---CoreferenceEntitys do not match CFEntitys---: "+ corefNotMatchWithCF.size()+" out of "+coreferenceEntities.size()+".");
-		for (CoreferenceEntity e : corefNotMatchWithCF) {
+//		for (CoreferenceEntity e : corefNotMatchWithCF) {
 //			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getFirstMention() );
-		}
+//		}
 		for (CFEntity  e1 : cFMatchWithCoref) {
 			for (CFEntity e2 : cfEntities) {
 				if(e1.getName().equals(e2.getName()) && e1.getBeginPosition() == e2.getBeginPosition()) {
@@ -97,9 +97,9 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 			}
 		}
 //		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
-		for (CFEntity e : cFNotMatchWithCoref) {
+//		for (CFEntity e : cFNotMatchWithCoref) {
 //			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
-		}
+//		}
 		System.out.println("Transitions: ");
 		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
 		for (Transition transition : transitions) {

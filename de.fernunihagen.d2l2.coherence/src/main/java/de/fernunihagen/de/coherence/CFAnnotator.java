@@ -218,7 +218,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			ArrayList<ForwardLookingCenterEntity> listWrongNsubj = new ArrayList<>();
 			for(Dependency dep : dependencies) {
 				if(dep.getDependencyType().equals("nsubj")&&!dep.getGovernor().getCoveredText().equals(rootVerb)) {				
-					ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), "wrongNsub");
+					ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), "SUBORDINATE");
 					if(!listWrongNsubj.contains(e)) {
 						listWrongNsubj.add(e);
 					}

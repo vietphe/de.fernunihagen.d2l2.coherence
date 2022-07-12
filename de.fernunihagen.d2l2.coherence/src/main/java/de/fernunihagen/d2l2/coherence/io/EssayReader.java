@@ -79,8 +79,7 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 	    catch(IOException ioe) {
 	      ioe.printStackTrace();
 	    }
-		//delete label in list
-		items.remove();
+		
 		currentIndex = 0;
 	}
 	// HOTFIX for Issue 445 in DKPro Core
