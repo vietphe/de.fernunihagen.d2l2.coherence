@@ -16,6 +16,7 @@ import de.fernunihagen.d2l2.coherence.types.CFEntity;
 import de.fernunihagen.d2l2.coherence.types.CoreferenceEntity;
 import de.fernunihagen.d2l2.coherence.types.Transition;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class Analyzer extends JCasAnnotator_ImplBase {
 	public static final String PARAM_OUTPUT_FILE = "outputFile";
@@ -37,27 +38,34 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 		int numOfSentences = sentences.size();
 		Collection<CFEntity> cfEntities = JCasUtil.select(aJCas, CFEntity.class);
 		
-		//calculate number of 3 Spezialfälle
-		int numOfNER = 0;
-		int numOfAndOr = 0;
-		int numOfSubClause = 0;		
-		for (CFEntity entity : cfEntities) {
-			if (entity.getDependencyType().contains("NER")) {
-				numOfNER +=1;
-			}
-			if (entity.getDependencyType().contains("CONJ")) {
-				numOfAndOr +=1;
-			}
-			if (entity.getDependencyType().contains("SUBORDINATE")) {
-				numOfSubClause +=1;
-			}
-//			System.out.println("CF: "+entity.getSentenceIndex()+" "+ entity.getName() + " "+entity.getBeginPosition()+":"+entity.getEndPosition()+" "+entity.getDependencyType()); 
-		} 
+		System.out.println("Transitions: ");
+		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
+		for (Transition transition : transitions) {
+		  		System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName()); 
+		}
+		System.out.println();
 		
 		Collection<CoreferenceEntity> coreferenceEntities = JCasUtil.select(aJCas, CoreferenceEntity.class);
+		int highestCorefId = 0;
 		for (CoreferenceEntity c: coreferenceEntities) {
-//			System.out.println("Coref: "+c.getName()+" " +c.getBeginPosition()+":"+c.getEndPosition() +" --> "+c.getFirstMention());
-		}		
+			if (Integer.valueOf(c.getId()) >= highestCorefId ) {
+				highestCorefId = Integer.valueOf(c.getId());
+			}
+//			System.out.println("Coref: "+c.getId()+" "+c.getName()+" " +c.getBeginPosition()+":"+c.getEndPosition() +" --> "+c.getFirstMention());
+		}
+//		//printing Coref
+//		System.out.println("Coref: ");
+//		for (int i = 1; i <= highestCorefId; i++) {
+//			System.out.print("Id ["+i+"]: ");
+//			for (CoreferenceEntity e: coreferenceEntities) {
+//				if(Integer.valueOf(e.getId()) == i) {
+//					System.out.print(e.getName()+" ("+e.getBeginPosition()+":"+e.getEndPosition()+")"+" - ");
+//				}
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
+		
 		ArrayList<CFEntity> cFNotMatchWithCoref = new ArrayList<>();
 		for (CFEntity e : cfEntities) {
 			cFNotMatchWithCoref.add(e);
@@ -85,10 +93,10 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				}
 			}
 		}
-//		System.out.println("---CoreferenceEntitys do not match CFEntitys---: "+ corefNotMatchWithCF.size()+" out of "+coreferenceEntities.size()+".");
-//		for (CoreferenceEntity e : corefNotMatchWithCF) {
-//			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getFirstMention() );
-//		}
+		System.out.println("---CoreferenceEntitys do not match CFEntitys---: "+ corefNotMatchWithCF.size()+" out of "+coreferenceEntities.size()+".");
+		for (CoreferenceEntity e : corefNotMatchWithCF) {
+			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getFirstMention() );
+		}
 		for (CFEntity  e1 : cFMatchWithCoref) {
 			for (CFEntity e2 : cfEntities) {
 				if(e1.getName().equals(e2.getName()) && e1.getBeginPosition() == e2.getBeginPosition()) {
@@ -96,20 +104,37 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				}
 			}
 		}
-//		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
-//		for (CFEntity e : cFNotMatchWithCoref) {
-//			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
-//		}
-		System.out.println("Transitions: ");
-		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
-		for (Transition transition : transitions) {
-		  		System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName()); 
+		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
+		for (CFEntity e : cFNotMatchWithCoref) {
+			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
 		}
-		System.out.println();		
+		System.out.println();
+		//calculate number of 3 Spezialfälle
+		int numOfNER = 0;
+		int numOfAndOr = 0;
+		int numOfSubClause = 0;		
+		for (CFEntity entity : cfEntities) {
+			if (entity.getDependencyType().contains("NER")) {
+				numOfNER +=1;
+			}
+			if (entity.getDependencyType().contains("CONJ")) {
+				numOfAndOr +=1;
+			}
+//					System.out.println("CF: "+entity.getSentenceIndex()+" "+ entity.getName() + " "+entity.getBeginPosition()+":"+entity.getEndPosition()+" "+entity.getDependencyType()); 
+		} 
+				
 		System.out.println("Spezialfall mit NER: "+ numOfNER);
-		System.out.println("Spezialfall mit And/Or: "+ numOfAndOr);
-		System.out.println("Spezialfall mit Nebensatz: "+ numOfSubClause);
+		System.out.println("Spezialfall mit And/Or: "+ numOfAndOr);	
+		System.out.println();
 		
+		int numOfPronoun = 0;
+		Collection<Token> tokens = JCasUtil.select(aJCas, Token.class);
+		for (Token token : tokens) {
+			if(token.getPos().getCoarseValue().equals("PRON")) {
+				numOfPronoun++;
+			}
+		}
+		System.out.println("Num of pronoun: "+numOfPronoun);
 	}
 	@Override
 	public void destroy() {

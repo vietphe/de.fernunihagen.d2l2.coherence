@@ -1,6 +1,6 @@
 
 
-/* First created by JCasGen Sat Jun 04 01:35:38 CEST 2022 */
+/* First created by JCasGen Mon Jul 18 09:50:36 CEST 2022 */
 package de.fernunihagen.d2l2.coherence.types;
 
 import org.apache.uima.jcas.JCas; 
@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Jun 11 13:21:13 CEST 2022
+ * Updated by JCasGen Mon Jul 18 09:50:36 CEST 2022
  * XML source: C:/Users/ENVY/git/de.fernunihagen.d2l2.coherence/de.fernunihagen.d2l2.coherence/src/main/resources/desc/type/Escrito.xml
  * @generated */
 public class CoreferenceEntity extends Annotation {
@@ -83,19 +83,19 @@ public class CoreferenceEntity extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getId() {
+  public String getId() {
     if (CoreferenceEntity_Type.featOkTst && ((CoreferenceEntity_Type)jcasType).casFeat_id == null)
       jcasType.jcas.throwFeatMissing("id", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((CoreferenceEntity_Type)jcasType).casFeatCode_id);}
+    return jcasType.ll_cas.ll_getStringValue(addr, ((CoreferenceEntity_Type)jcasType).casFeatCode_id);}
     
   /** setter for id - sets  
    * @generated
    * @param v value to set into the feature 
    */
-  public void setId(int v) {
+  public void setId(String v) {
     if (CoreferenceEntity_Type.featOkTst && ((CoreferenceEntity_Type)jcasType).casFeat_id == null)
       jcasType.jcas.throwFeatMissing("id", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
-    jcasType.ll_cas.ll_setIntValue(addr, ((CoreferenceEntity_Type)jcasType).casFeatCode_id, v);}    
+    jcasType.ll_cas.ll_setStringValue(addr, ((CoreferenceEntity_Type)jcasType).casFeatCode_id, v);}    
    
     
   //*--------------*

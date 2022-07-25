@@ -37,12 +37,13 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
 		ArrayList<CoreferenceChain> corefs = new ArrayList<>();
 		for (CoreferenceChain coreferenceChain : corefs1) {
 			corefs.add(coreferenceChain);
-		}		
+		}
+		int id=1;
+		outerloop:
 		for (int i = 0; i < corefs.size(); i++) {
 			
 			String corefChain = readChains(corefs.get(i).getFirst());
 			stringBuilder.delete(0, stringBuilder.length()-1);
-			
 			//remove ";" at begin of corefchains if it exists 
 			char firstChar = corefChain.charAt(0);
 			String firstCharStr = Character.toString(firstChar);
@@ -50,18 +51,28 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
 				corefChain = corefChain.substring(1, corefChain.length());
 			}
 //				System.out.println(corefChain);			
-			int coreferenceLinkId = i;
+			String coreferenceLinkId = ""+id;
+			id++;
 			String [] strArr = corefChain.split(";");
 			
+			//TODO: check if pronoun "it" has a reference to an entire sentence. If so, annotate it as entireSentence
+			String arr [] = strArr[strArr.length-1].split(" ");
+			if(arr[0].toLowerCase().equals("it")&& numOfWord(strArr[0]) >= 6 ){
+				strArr[0] = "nominalPhrase/entireSentence 0 0";
+			}		
 			//solve nominal phrase
 			for (int k = 0; k < strArr.length; k++) {
-				if(numOfWord(strArr[k])>3) {
+				if(numOfWord(strArr[k])>4) {
 					strArr[k] = nominalPhraseToWord(strArr[k],aJCas);
+				}
+				//if it is a phrase with 2 words, take the 2nd word
+				if(numOfWord(strArr[k])==4) {
+					strArr[k] = newCorefEntity(strArr[k]);
 				}
 			}
 			String [] temp1 = strArr[0].split(" ");
 			String firstMention = temp1[0];			
-//				System.out.println(firstMention);				
+//				System.out.println(firstMention);
 			for (int j = 0; j < strArr.length; j++) {
 //					System.out.println("--"+strArr[j]);
 				String [] temp = strArr[j].split(" ");
@@ -74,8 +85,10 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
 					ce.setEndPosition(Integer.valueOf(temp[2]));
 					ce.setFirstMention(firstMention);
 					ce.addToIndexes();
+//					System.out.print(temp[0]+" "+"-");
 				}
 			}
+//			System.out.println();
 		}
 	}
    	//to read CoreferenceLink data type
@@ -92,7 +105,7 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
   		StringTokenizer st = new StringTokenizer(str);  		
   		return st.countTokens();  	
   	}
-  	//get only the last word of CorefEntity
+  	//get only the last word of CorefEntity if corefchain include 2 words
   	public static String newCorefEntity(String str) {  		
   		String result = "";
   		String[] words = str.trim().split("\\s+");
@@ -111,6 +124,7 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
   		int lengthOfElement  = words[words.length-3].length();
   		return Integer.valueOf(words[words.length-1])-lengthOfElement;
   	}
+  	
   	public static String nominalPhraseToWord(String str, JCas aJCas) {
   		Collection<CFEntity> cfEntities = JCasUtil.select(aJCas, CFEntity.class);
   		ArrayList<CorefEntity> corefEntities = new ArrayList<>();
@@ -129,7 +143,7 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
   				name = name.substring(0, name.length()-1);
   				end = end-1;				
   			}
-  			corefEntities.add(new CorefEntity(begin, end, name));
+  			corefEntities.add(new CorefEntity(begin, end, name,"",""));
 //  			System.out.println(name +" "+ begin +" "+ end);
   			begin = begin+ words[i].length()+1;
   			

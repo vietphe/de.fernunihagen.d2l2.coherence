@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Sat Jun 11 13:21:13 CEST 2022
+ * Updated by JCasGen Mon Jul 18 09:50:35 CEST 2022
  * XML source: C:/Users/ENVY/git/de.fernunihagen.d2l2.coherence/de.fernunihagen.d2l2.coherence/src/main/resources/desc/type/Escrito.xml
  * @generated */
 public class CFEntity extends Annotation {

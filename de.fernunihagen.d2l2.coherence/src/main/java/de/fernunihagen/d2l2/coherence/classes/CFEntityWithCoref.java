@@ -1,18 +1,24 @@
 package de.fernunihagen.d2l2.coherence.classes;
 
-public class ForwardLookingCenterEntity {
+public class CFEntityWithCoref {
+	int sentenceIndex;
 	int begin;
 	int end;
 	String name;
 	String dependencyType;
-	public ForwardLookingCenterEntity(int begin, int end, String name, String dependencyType) {
+	String id;
+	String firstMention;
+	public CFEntityWithCoref(int sentenceIndex,int begin, int end, String name, String dependencyType, String id, String firstMention) {
 		super();
+		this.sentenceIndex = sentenceIndex;
 		this.begin = begin;
 		this.end = end;
 		this.name = name;
 		this.dependencyType = dependencyType;
+		this.id = id;
+		this.firstMention = firstMention;
 	}
-	public ForwardLookingCenterEntity() {
+	public CFEntityWithCoref() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -40,6 +46,27 @@ public class ForwardLookingCenterEntity {
 	public void setDependencyType(String dependencyType) {
 		this.dependencyType = dependencyType;
 	}
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public int getSentenceIndex() {
+		return sentenceIndex;
+	}
+	public void setSentenceIndex(int sentenceIndex) {
+		this.sentenceIndex = sentenceIndex;
+	}
+	
+	public String getFirstMention() {
+		return firstMention;
+	}
+	public void setFirstMention(String firstMention) {
+		this.firstMention = firstMention;
+	}
 	@Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -48,7 +75,7 @@ public class ForwardLookingCenterEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ForwardLookingCenterEntity entity = (ForwardLookingCenterEntity) o;
+        CFEntityWithCoref entity = (CFEntityWithCoref) o;
         return  begin == entity.begin &&
         		end == entity.end &&
         		name.equals(entity.name);

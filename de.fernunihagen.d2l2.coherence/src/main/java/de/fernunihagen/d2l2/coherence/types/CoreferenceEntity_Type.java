@@ -1,5 +1,5 @@
 
-/* First created by JCasGen Sat Jun 04 01:35:38 CEST 2022 */
+/* First created by JCasGen Mon Jul 18 09:50:36 CEST 2022 */
 package de.fernunihagen.d2l2.coherence.types;
 
 import org.apache.uima.jcas.JCas;
@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sat Jun 11 13:21:13 CEST 2022
+ * Updated by JCasGen Mon Jul 18 09:50:36 CEST 2022
  * @generated */
 public class CoreferenceEntity_Type extends Annotation_Type {
   /** @generated */
@@ -30,19 +30,19 @@ public class CoreferenceEntity_Type extends Annotation_Type {
    * @param addr low level Feature Structure reference
    * @return the feature value 
    */ 
-  public int getId(int addr) {
+  public String getId(int addr) {
         if (featOkTst && casFeat_id == null)
       jcas.throwFeatMissing("id", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
-    return ll_cas.ll_getIntValue(addr, casFeatCode_id);
+    return ll_cas.ll_getStringValue(addr, casFeatCode_id);
   }
   /** @generated
    * @param addr low level Feature Structure reference
    * @param v value to set 
    */    
-  public void setId(int addr, int v) {
+  public void setId(int addr, String v) {
         if (featOkTst && casFeat_id == null)
       jcas.throwFeatMissing("id", "de.fernunihagen.d2l2.coherence.types.CoreferenceEntity");
-    ll_cas.ll_setIntValue(addr, casFeatCode_id, v);}
+    ll_cas.ll_setStringValue(addr, casFeatCode_id, v);}
     
   
  
@@ -154,7 +154,7 @@ public class CoreferenceEntity_Type extends Annotation_Type {
     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl)this.casType, getFSGenerator());
 
  
-    casFeat_id = jcas.getRequiredFeatureDE(casType, "id", "uima.cas.Integer", featOkTst);
+    casFeat_id = jcas.getRequiredFeatureDE(casType, "id", "uima.cas.String", featOkTst);
     casFeatCode_id  = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_id).getCode();
 
  

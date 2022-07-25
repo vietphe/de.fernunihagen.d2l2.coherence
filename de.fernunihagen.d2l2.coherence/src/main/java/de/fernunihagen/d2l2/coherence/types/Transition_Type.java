@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sat Jun 11 13:21:13 CEST 2022
+ * Updated by JCasGen Mon Jul 18 09:50:36 CEST 2022
  * @generated */
 public class Transition_Type extends Annotation_Type {
   /** @generated */
