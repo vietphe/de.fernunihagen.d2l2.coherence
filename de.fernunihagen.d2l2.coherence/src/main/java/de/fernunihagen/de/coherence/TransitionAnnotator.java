@@ -85,20 +85,20 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 		Collection<CFEntity> cfes = JCasUtil.select(aJCas, CFEntity.class);
 		Collection<Sentence> sentences = JCasUtil.select(aJCas, Sentence.class);
 		int numOfSentences = sentences.size();
-		//printing CFs
-		System.out.println("CFs: ");
-		for (int i = 1; i <= numOfSentences; i++) {
-			System.out.print("CF of ["+i+"]: ");
-			for (CFEntity e : cfes) {
-				if(e.getSentenceIndex() == i) {
-					System.out.print(e.getName()+" ("+e.getDependencyType()+")"+" - ");
-				}
-			}
-			System.out.println();
-		}
-		System.out.println();
-		
-		//match CFEntity and CorefEntity
+//		//printing CFs
+//		System.out.println("CFs: ");
+//		for (int i = 1; i <= numOfSentences; i++) {
+//			System.out.print("CF of ["+i+"]: ");
+//			for (CFEntity e : cfes) {
+//				if(e.getSentenceIndex() == i) {
+//					System.out.print(e.getName()+" ("+e.getDependencyType()+")"+" - ");
+//				}
+//			}
+//			System.out.println();
+//		}
+//		System.out.println();
+//		
+		// match CFEntity and CorefEntity
 		ArrayList<CFEntityWithCoref> cFEntityWithCoref = new ArrayList<>();
 		for (CFEntity e : cfes) {
 			CFEntityWithCoref e1 = new CFEntityWithCoref(e.getSentenceIndex(), e.getBeginPosition(),e.getEndPosition(),e.getName(),e.getDependencyType(),"","");
@@ -108,7 +108,7 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 		for(CFEntityWithCoref e: cFEntityWithCoref) {			
 			for(CorefEntity coreferenceEntity: corefEntities ) {
 				if((e.getBegin()== coreferenceEntity.getBegin())&&(e.getEnd()==coreferenceEntity.getEnd())) {
-					e.setName(coreferenceEntity.getFirstMention());
+					e.setFirstMention(coreferenceEntity.getFirstMention());
 				}
 			}
 			
@@ -118,7 +118,12 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			System.out.print("CF of ["+i+"]: ");
 			for (CFEntityWithCoref e : cFEntityWithCoref) {
 				if(e.getSentenceIndex() == i) {
-					System.out.print(e.getName()+" ("+e.getDependencyType()+")"+" - ");
+					if(e.getFirstMention().equals("")) {
+						System.out.print(e.getName()+" ("+e.getDependencyType()+")"+" - ");
+					}else {
+						System.out.print(e.getName()+" ("+e.getDependencyType()+")"+ "("+e.getFirstMention()+") "+" - ");
+					}
+					
 				}
 			}
 			System.out.println();
@@ -154,21 +159,44 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 //			System.out.println();
 //			
 //		}
+				
 		ArrayList<Object[]> CpAndCbList = new ArrayList<>();
 		//add Cp and Cb for first sentence
 		CpAndCbList.add(new Object[] {1,cfeMap.get(1).get(0).getName(),"undefined"});
 		//Logic for calculation of Cbs
 		for (int i = 1; i < cfeMap.size(); i++) {
 			String cB = "undefined";
-			String cP = cfeMap.get(i+1).get(0).getName();
+			String cP = "";
+			if (cfeMap.get(i+1).get(0).getFirstMention().equals("")) {
+				cP = cfeMap.get(i+1).get(0).getName();
+			}else {
+				cP = cfeMap.get(i+1).get(0).getFirstMention();
+			}
 			ArrayList<CFEntityWithCoref> cFOfActualSentence = cfeMap.get(i+1);
 			ArrayList<CFEntityWithCoref> cFOfPreviousSentence = cfeMap.get(i);
 			innerloop1:
 			for (CFEntityWithCoref e1 : cFOfPreviousSentence) {
+				String e1Name = "";
+				if (e1.getFirstMention().equals("")) {
+					e1Name = e1.getName();
+				}
+				else {
+					e1Name = e1.getFirstMention();
+				}
+				
 				innerloop2:
 				for (CFEntityWithCoref e2 : cFOfActualSentence) {
-					if (e1.getName().equals(e2.getName())) {
-						cB = e2.getName();
+					
+					String e2Name = "";
+					
+					if (e2.getFirstMention().equals("")) {
+						e2Name = e2.getName();
+					}
+					else {
+						e2Name = e2.getFirstMention();
+					}
+					if (e1Name.equals(e2Name)&&!e1Name.toLowerCase().equals("it")&&!e1Name.toLowerCase().equals("this")&&!e1Name.toLowerCase().equals("that")) { //to eliminate the case that "it" and "this" don't refer to anything but the words are the same
+						cB = e2Name;
 						break innerloop1;
 					}
 				}

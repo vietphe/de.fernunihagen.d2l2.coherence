@@ -32,7 +32,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		String essayText = aJCas.getDocumentText();
+//		String essayText = aJCas.getDocumentText();
 //		System.out.println(essayText);
 		Collection<Sentence> sentences = JCasUtil.select(aJCas, Sentence.class);
 		int numOfSentences = sentences.size();
@@ -95,7 +95,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 		}
 		System.out.println("---CoreferenceEntitys do not match CFEntitys---: "+ corefNotMatchWithCF.size()+" out of "+coreferenceEntities.size()+".");
 		for (CoreferenceEntity e : corefNotMatchWithCF) {
-			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getFirstMention() );
+//			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getFirstMention() );
 		}
 		for (CFEntity  e1 : cFMatchWithCoref) {
 			for (CFEntity e2 : cfEntities) {
@@ -106,7 +106,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 		}
 		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
 		for (CFEntity e : cFNotMatchWithCoref) {
-			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
+//			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
 		}
 		System.out.println();
 		//calculate number of 3 Spezialfälle
