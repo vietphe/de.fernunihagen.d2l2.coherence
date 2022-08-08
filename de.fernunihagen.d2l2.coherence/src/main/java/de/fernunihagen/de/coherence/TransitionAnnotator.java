@@ -195,7 +195,8 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 					else {
 						e2Name = e2.getFirstMention();
 					}
-					if (e1Name.equals(e2Name)&&!e1Name.toLowerCase().equals("it")&&!e1Name.toLowerCase().equals("this")&&!e1Name.toLowerCase().equals("that")) { //to eliminate the case that "it" and "this" don't refer to anything but the words are the same
+					if (e1Name.equals(e2Name)&&!e1Name.toLowerCase().equals("it")&&!e1Name.toLowerCase().equals("this")&&!e1Name.toLowerCase().equals("that")
+							&&!e1Name.toLowerCase().equals("something")) { //to eliminate the case that "it" and "this" don't refer to anything but the words are the same
 						cB = e2Name;
 						break innerloop1;
 					}

@@ -68,6 +68,8 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 			for (File f : fileArray) {
 				String id = f.getName();
 				String text = cleanString(String.join(" ", FileUtils.readLines(f,inputCharset)));
+				System.out.println(String.join(" ", FileUtils.readLines(f,inputCharset)));
+				System.out.println(text);
 				if (text.startsWith("missing data") || text.equals("")) {
 					continue;
 				}
@@ -84,10 +86,15 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 	}
 	// HOTFIX for Issue 445 in DKPro Core
 	private static String cleanString(String textForCas) {
-		textForCas = textForCas.replaceAll("[^a-zA-Z0-9\\-\\.,:;\\(\\)\\? ]", "");
+		textForCas = textForCas.replaceAll("[^a-zA-Z0-9\\-\\.,:;\\(\\)\\'´’…`@/?! ]", "");
 		textForCas = textForCas.replace("…", "...");
 		textForCas = textForCas.replace("´", "'");
-		return textForCas.replace("’", "'").trim();
+		textForCas = textForCas.replace("`", "'");
+		textForCas = textForCas.replace("’", "'");	
+		//to add space after a dot if not
+		textForCas = textForCas.replace(".",". ");
+		textForCas = textForCas.replace(".  ",". "); 
+		return textForCas.trim();
 	}
 	
 	public boolean hasNext() throws IOException, CollectionException {
