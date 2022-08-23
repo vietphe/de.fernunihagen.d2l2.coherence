@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Mon Jul 18 09:50:35 CEST 2022
+ * Updated by JCasGen Tue Aug 16 12:28:05 CEST 2022
  * @generated */
 public class CFEntity_Type extends Annotation_Type {
   /** @generated */

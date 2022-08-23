@@ -11,7 +11,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Mon Jul 18 09:50:36 CEST 2022
+ * Updated by JCasGen Tue Aug 16 12:28:05 CEST 2022
  * XML source: C:/Users/ENVY/git/de.fernunihagen.d2l2.coherence/de.fernunihagen.d2l2.coherence/src/main/resources/desc/type/Escrito.xml
  * @generated */
 public class CoreferenceEntity extends Annotation {

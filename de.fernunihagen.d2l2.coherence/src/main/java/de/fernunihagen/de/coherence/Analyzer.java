@@ -14,6 +14,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.fernunihagen.d2l2.coherence.types.CFEntity;
 import de.fernunihagen.d2l2.coherence.types.CoreferenceEntity;
+import de.fernunihagen.d2l2.coherence.types.Entity;
 import de.fernunihagen.d2l2.coherence.types.Transition;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
@@ -37,7 +38,10 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 		Collection<Sentence> sentences = JCasUtil.select(aJCas, Sentence.class);
 		int numOfSentences = sentences.size();
 		Collection<CFEntity> cfEntities = JCasUtil.select(aJCas, CFEntity.class);
-		
+		Collection<Entity> entities = JCasUtil.select(aJCas, Entity.class); 
+//		for (Entity entity : entities) {
+//			System.out.println(entity.getSentenceIndex()+ "->"+ entity.getName()); 
+//		}
 		System.out.println("Transitions: ");
 		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
 		for (Transition transition : transitions) {
@@ -65,7 +69,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 //			System.out.println();
 //		}
 //		System.out.println();
-		
+//		
 		ArrayList<CFEntity> cFNotMatchWithCoref = new ArrayList<>();
 		for (CFEntity e : cfEntities) {
 			cFNotMatchWithCoref.add(e);

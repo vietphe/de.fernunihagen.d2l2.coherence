@@ -76,9 +76,7 @@ public class CFEntityWithCoref {
             return false;
         }
         CFEntityWithCoref entity = (CFEntityWithCoref) o;
-        return  begin == entity.begin &&
-        		end == entity.end &&
-        		name.equals(entity.name);
+        return  id == entity.id;
     }
 	
 	

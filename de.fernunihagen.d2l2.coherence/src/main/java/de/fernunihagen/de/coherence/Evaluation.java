@@ -7,20 +7,25 @@ import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import webanno.custom.Cf;
 
 public class Evaluation extends JCasAnnotator_ImplBase {
 
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		int numOfPronoun = 0;
-		Collection<Token> tokens = JCasUtil.select(aJCas, Token.class);
-		for (Token token : tokens) {
-			if(token.getPos().getCoarseValue().equals("PRON")) {
-				numOfPronoun++;
-			}
+		Collection<Sentence> sentences = JCasUtil.select(aJCas, Sentence.class);
+		for (Sentence sentence : sentences) {
+			sentence.getBegin();
 		}
-		System.out.println(numOfPronoun);
+		int numOfSentences = sentences.size();
+		System.out.println(numOfSentences);
+		Collection<Cf> cfs = JCasUtil.select(aJCas, Cf.class);
+		for (Cf cf : cfs) {
+			cf.getOrder();
+		}
+		System.out.println(cfs.size());
 	}
 
 }

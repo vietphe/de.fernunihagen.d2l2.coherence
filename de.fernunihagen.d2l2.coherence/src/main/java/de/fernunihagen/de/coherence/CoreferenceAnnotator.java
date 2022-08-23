@@ -137,11 +137,16 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
   			String name = words[i];
   			end = begin + words[i].length();
   			//check if a comma at the end of word
-  			char c = name.charAt(name.length()-1);
-  			String s = Character.toString(c);  			
-  			if(s.equals(",")){
-  				name = name.substring(0, name.length()-1);
-  				end = end-1;				
+  			try {
+				char c = name.charAt(name.length()-1);
+				
+				String s = Character.toString(c);  			
+				if(s.equals(",")){
+					name = name.substring(0, name.length()-1);
+					end = end-1;				
+				}
+  			} catch (Exception e) {
+  				System.out.println("RS:"+str);
   			}
   			corefEntities.add(new CorefEntity(begin, end, name,"",""));
 //  			System.out.println(name +" "+ begin +" "+ end);

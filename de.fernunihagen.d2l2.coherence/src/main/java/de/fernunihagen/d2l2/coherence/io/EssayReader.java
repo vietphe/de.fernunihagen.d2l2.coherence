@@ -59,7 +59,7 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 			inputFileURL = ResourceUtils.resolveLocation(inputFileString, this, aContext);
 			File file = new File(inputFileString);
 			//UTF-8 for German
-			Charset inputCharset = Charset.forName("ISO-8859-1");
+			Charset inputCharset = Charset.forName("UTF-8");
 			File[] fileArray = file.listFiles(new FilenameFilter() {
 				public boolean accept(File dir, String name) {
 					return name.indexOf(".txt") != -1;
@@ -68,8 +68,9 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 			for (File f : fileArray) {
 				String id = f.getName();
 				String text = cleanString(String.join(" ", FileUtils.readLines(f,inputCharset)));
-				System.out.println(String.join(" ", FileUtils.readLines(f,inputCharset)));
+//				System.out.println(String.join(" ", FileUtils.readLines(f,inputCharset)));
 				System.out.println(text);
+				System.out.println( );
 				if (text.startsWith("missing data") || text.equals("")) {
 					continue;
 				}
@@ -86,15 +87,14 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 	}
 	// HOTFIX for Issue 445 in DKPro Core
 	private static String cleanString(String textForCas) {
-		textForCas = textForCas.replaceAll("[^a-zA-Z0-9\\-\\.,:;\\(\\)\\'´’…`@/?! ]", "");
-		textForCas = textForCas.replace("…", "...");
-		textForCas = textForCas.replace("´", "'");
-		textForCas = textForCas.replace("`", "'");
-		textForCas = textForCas.replace("’", "'");	
+//		textForCas = textForCas.replaceAll("[^a-zA-Z0-9\\-\\.,:;\\(\\)\\'´’…`@/?! ]", " ");
+		textForCas = textForCas.replaceAll("…", "...");
+		textForCas = textForCas.replaceAll("´", "'");				
+		textForCas = textForCas.replaceAll("`", "'");
+		textForCas = textForCas.replaceAll("’", "'");	
 		//to add space after a dot if not
-		textForCas = textForCas.replace(".",". ");
-		textForCas = textForCas.replace(".  ",". "); 
-		return textForCas.trim();
+		textForCas = textForCas.replaceAll("[,.!?;:]", "$0 ").replaceAll("\\s+", " "); 
+		return textForCas;
 	}
 	
 	public boolean hasNext() throws IOException, CollectionException {

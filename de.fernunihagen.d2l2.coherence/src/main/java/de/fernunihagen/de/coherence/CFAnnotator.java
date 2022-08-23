@@ -38,7 +38,8 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 	
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
-		int sentenceIndex=1;		
+		int sentenceIndex=1;
+		Collection<CoreferenceEntity> coreferenceEntities = JCasUtil.select(aJCas, CoreferenceEntity.class);
 		Collection<Dependency> deps = JCasUtil.select(aJCas, Dependency.class);
 		for (Dependency dep : deps) {
 //			System.out.println(dep.getGovernor().getCoveredText() +" "+dep.getDependencyType()+" "+dep.getDependent().getCoveredText());
@@ -58,8 +59,16 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 					rv.setEndPosition(dep.getDependent().getEnd());
 					rv.setName(dep.getDependent().getCoveredText());
 					break;
+				}else {
+					if (dep.getDependencyType().equals("root")){
+						rv.setBeginPosition(dep.getDependent().getBegin());
+						rv.setEndPosition(dep.getDependent().getEnd());
+						rv.setName(dep.getDependent().getCoveredText());
+						break;
+					}
 				}
 			}
+//			System.out.println("RV:" + rv.getName());
 			//CFs of main clause
 			ArrayList<ForwardLookingCenterEntity> cfOfMainClause = new ArrayList<>();
 			for (Dependency dep : deps) {
