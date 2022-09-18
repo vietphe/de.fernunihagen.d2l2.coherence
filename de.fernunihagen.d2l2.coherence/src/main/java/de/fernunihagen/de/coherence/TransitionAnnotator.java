@@ -97,32 +97,7 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			
 		}
 		
-		System.out.println("CFs with Coref: ");
-		for (int i = 1; i <= numOfSentences; i++) {
-			System.out.print("CF of ["+i+"]: ");
-			for (CFEntityWithCoref e : cFEntityWithCoref) {
-				if(e.getSentenceIndex() == i) {
-					if(e.getFirstMention().equals("")) {
-						System.out.print(e.getName()+" ("+e.getId()+")"+" - ");
-					}else {
-						System.out.print(e.getName()+" ("+e.getId()+")"+ "("+e.getDependencyType()+") "+" - ");
-					}
-					
-				}
-			}
-			System.out.println();
-		}
-		System.out.println();
-		
-		//remove expletive "it", "this", "that"		
-		for (Iterator iterator = cFEntityWithCoref.iterator(); iterator.hasNext();) {
-			CFEntityWithCoref e = (CFEntityWithCoref) iterator.next();
-			if((e.getName().toLowerCase().equals("it")||e.getName().toLowerCase().equals("that")||e.getName().toLowerCase().equals("this"))&& (e.getFirstMention().toLowerCase().equals(e.getName().toLowerCase())||e.getFirstMention().equals(""))) {
-				iterator.remove();
-			}
-		}
-				
-//		System.out.println("CFs new: ");
+//		System.out.println("CFs with Coref: ");
 //		for (int i = 1; i <= numOfSentences; i++) {
 //			System.out.print("CF of ["+i+"]: ");
 //			for (CFEntityWithCoref e : cFEntityWithCoref) {
@@ -130,7 +105,7 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 //					if(e.getFirstMention().equals("")) {
 //						System.out.print(e.getName()+" ("+e.getId()+")"+" - ");
 //					}else {
-//						System.out.print(e.getName()+" ("+e.getId()+")"+ "("+e.getFirstMention()+") "+" - ");
+//						System.out.print(e.getName()+" ("+e.getId()+")"+ "("+e.getDependencyType()+") "+ "("+e.getFirstMention()+") "+" - ");
 //					}
 //					
 //				}
@@ -138,6 +113,34 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 //			System.out.println();
 //		}
 //		System.out.println();
+		
+		//remove expletive "it", "this", "that", it as sentence		
+		for (Iterator iterator = cFEntityWithCoref.iterator(); iterator.hasNext();) {
+			CFEntityWithCoref e = (CFEntityWithCoref) iterator.next();
+			if (e.getName().toLowerCase().equals("it") && e.getFirstMention().equals("AsSentence") ) {
+				iterator.remove();
+			}
+			if((e.getName().toLowerCase().equals("it")||e.getName().toLowerCase().equals("that")||e.getName().toLowerCase().equals("this"))&& (e.getFirstMention().toLowerCase().equals(e.getName().toLowerCase())||e.getFirstMention().equals(""))) {
+				iterator.remove();
+			}
+		}
+				
+		System.out.println("CFs new: ");
+		for (int i = 1; i <= numOfSentences; i++) {
+			System.out.print("CF of ["+i+"]: ");
+			for (CFEntityWithCoref e : cFEntityWithCoref) {
+				if(e.getSentenceIndex() == i) {
+					if(e.getFirstMention().equals("")) {
+						System.out.print(e.getName()+" ("+e.getId()+")"+" - ");
+					}else {
+						System.out.print(e.getName()+" ("+e.getId()+")"+ "("+e.getFirstMention()+") "+" - ");
+					}
+					
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
 		
 		//convert cfes to ArrayList
 		ArrayList<CFEntity> cfesList = new ArrayList<>();
@@ -166,17 +169,27 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			}			
 			cfeMap.put(i, aList);
 		}
-		
 		for (Map.Entry<Integer, ArrayList<CFEntityWithCoref>> entry : cfeMap.entrySet()) {
 			Integer key = entry.getKey();
 			ArrayList<CFEntityWithCoref> val = entry.getValue();
 			System.out.print("["+key+"]: ");
 			for (CFEntityWithCoref cfEntity : val) {
-				System.out.print(" "+cfEntity.getName()+"("+cfEntity.getId()+")"+"("+cfEntity.getFirstMention()+")"+"-");
+				System.out.print(" "+cfEntity.getName()+"("+cfEntity.getBegin()+")"+"-");
 			}
 			System.out.println();
 			
 		}
+//		for (Map.Entry<Integer, ArrayList<CFEntityWithCoref>> entry : cfeMap.entrySet()) {
+//			Integer key = entry.getKey();
+//			ArrayList<CFEntityWithCoref> val = entry.getValue();
+//			System.out.print("["+key+"]: ");
+//			for (CFEntityWithCoref cfEntity : val) {
+//				System.out.print(cfEntity.getBegin()+"- ");
+//			}
+//			System.out.println();
+//			
+//		}
+		
 		//add to new uima-type  Entity  
 		for (Map.Entry<Integer, ArrayList<CFEntityWithCoref>> entry : cfeMap.entrySet()) {
 			
@@ -219,15 +232,15 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			entity.setFirstMention(val.getFirstMention());
 			entity.addToIndexes();
 		}		
-//		//Print CP
-//		System.out.println("CPs: ");
-//		for (Map.Entry<Integer, CFEntityWithCoref> entry : cPs.entrySet()) {
-//			Integer key = entry.getKey();
-//			CFEntityWithCoref val = entry.getValue();
-//			System.out.print(key+"->");
-//			System.out.println(val.getName()+"("+val.getId()+")");
-//			
-//		}
+		//Print CP
+		System.out.println("CPs: ");
+		for (Map.Entry<Integer, CFEntityWithCoref> entry : cPs.entrySet()) {
+			Integer key = entry.getKey();
+			CFEntityWithCoref val = entry.getValue();
+			System.out.print(key+": ");
+			System.out.println(val.getName()+"("+val.getBegin()+")");
+			
+		}
 		
 		
 		//list of CBs
@@ -263,27 +276,27 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			entity.setFirstMention(val.getFirstMention());
 			entity.addToIndexes();
 		}		
-//		//Print CBs
-//		System.out.println("CBs: ");
-//		for (Map.Entry<Integer, CFEntityWithCoref> entry : cBs.entrySet()) {
-//			Integer key = entry.getKey();
-//			CFEntityWithCoref val = entry.getValue();
-//			System.out.print(key+"->");
-//			System.out.println(val.getName()+"("+val.getId()+")");
-//			
-//		}
+		//Print CBs
+		System.out.println("CBs: ");
+		for (Map.Entry<Integer, CFEntityWithCoref> entry : cBs.entrySet()) {
+			Integer key = entry.getKey();
+			CFEntityWithCoref val = entry.getValue();
+			System.out.print(key+"->");
+			System.out.println(val.getName()+"("+val.getBegin()+")");
+			
+		}
 		ArrayList<Object[]> CpAndCbList = new ArrayList<>();
 		for (int i = 0; i < cPs.size(); i++) {
 			CpAndCbList.add(new Object[] {i+1,cPs.get(i+1),cBs.get(i+1)});
 		}
 		
-		System.out.println("Cp and Cb: ");
-		for(Object[] o : CpAndCbList) {
-			System.out.print("["+o[0]+"]: ");
-			System.out.print((((CFEntityWithCoref) o[1]).getName()+"("+ ((CFEntityWithCoref) o[1]).getId()+")"+" "));
-			System.out.print((((CFEntityWithCoref) o[2]).getName()+"("+((CFEntityWithCoref) o[2]).getId()+")"+" "));
-			System.out.println();
-		}
+//		System.out.println("Cp and Cb: ");
+//		for(Object[] o : CpAndCbList) {
+//			System.out.print("["+o[0]+"]: ");
+//			System.out.print((((CFEntityWithCoref) o[1]).getName()+"("+ ((CFEntityWithCoref) o[1]).getId()+")"+" "));
+//			System.out.print((((CFEntityWithCoref) o[2]).getName()+"("+((CFEntityWithCoref) o[2]).getId()+")"+" "));
+//			System.out.println();
+//		}
 		System.out.println();
 		
 //		ArrayList<Object[]> CpAndCbList = new ArrayList<>();

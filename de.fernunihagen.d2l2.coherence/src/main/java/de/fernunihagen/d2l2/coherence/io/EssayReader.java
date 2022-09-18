@@ -87,13 +87,13 @@ public class EssayReader extends JCasCollectionReader_ImplBase {
 	}
 	// HOTFIX for Issue 445 in DKPro Core
 	private static String cleanString(String textForCas) {
-//		textForCas = textForCas.replaceAll("[^a-zA-Z0-9\\-\\.,:;\\(\\)\\'´’…`@/?! ]", " ");
+//		textForCas = textForCas.replaceAll("[^a-zA-Z0-9\\-\\.,:;\\(\\)\\'´’…`@/?! ]", "");
 		textForCas = textForCas.replaceAll("…", "...");
 		textForCas = textForCas.replaceAll("´", "'");				
 		textForCas = textForCas.replaceAll("`", "'");
 		textForCas = textForCas.replaceAll("’", "'");	
 		//to add space after a dot if not
-		textForCas = textForCas.replaceAll("[,.!?;:]", "$0 ").replaceAll("\\s+", " "); 
+//		textForCas = textForCas.replaceAll("[,.!?;:]", "$0 ").replaceAll("\\s+", " "); 
 		return textForCas;
 	}
 	

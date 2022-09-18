@@ -58,7 +58,7 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
 			//TODO: check if pronoun "it" has a reference to an entire sentence. If so, annotate it as entireSentence
 			String arr [] = strArr[strArr.length-1].split(" ");
 			if(arr[0].toLowerCase().equals("it")&& numOfWord(strArr[0]) >= 6 ){
-				strArr[0] = "nominalPhrase/entireSentence 0 0";
+				strArr[0] = "AsSentence 0 0";
 			}		
 			//solve nominal phrase
 			for (int k = 0; k < strArr.length; k++) {

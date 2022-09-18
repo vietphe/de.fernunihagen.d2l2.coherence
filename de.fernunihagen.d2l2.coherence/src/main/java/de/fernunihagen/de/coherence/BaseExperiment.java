@@ -77,11 +77,11 @@ public class BaseExperiment {
 	                    BinaryCasWriter.PARAM_OVERWRITE, true,
 	                    BinaryCasWriter.PARAM_TARGET_LOCATION, "target/bincas"
 	                    );
-				AnalysisEngineDescription xmiWriter = createEngineDescription(
-						XmiWriter.class, 
-						XmiWriter.PARAM_OVERWRITE, true,
-						XmiWriter.PARAM_TARGET_LOCATION, "target/PreprocessingCas"
-						);
+//				AnalysisEngineDescription xmiWriter = createEngineDescription(
+//						XmiWriter.class, 
+//						XmiWriter.PARAM_OVERWRITE, true,
+//						XmiWriter.PARAM_TARGET_LOCATION, "target/PreprocessingCas"
+//						);
 				SimplePipeline.runPipeline(txtReader, 
 						seg, 
 						posTagger,
@@ -89,8 +89,7 @@ public class BaseExperiment {
 						parser,
 						ner,
 						depparser,
-						binCasWriter,
-						xmiWriter
+						binCasWriter
 						);
 
 
@@ -124,6 +123,11 @@ public class BaseExperiment {
 		AnalysisEngineDescription cFAnnotator = createEngineDescription(CFAnnotator.class);
 		AnalysisEngineDescription transitionAnnotator = createEngineDescription(TransitionAnnotator.class);
 		AnalysisEngineDescription analyzer = createEngineDescription(Analyzer.class);
+		AnalysisEngineDescription xmiWriter = createEngineDescription(
+				XmiWriter.class, 
+				XmiWriter.PARAM_OVERWRITE, true,
+				XmiWriter.PARAM_TARGET_LOCATION, "target/casTest"
+				);
 		
 		SimplePipeline.runPipeline(txtReader, 
 				seg, 
@@ -137,6 +141,7 @@ public class BaseExperiment {
 				corefAnnotator,				
 				transitionAnnotator,
 				analyzer
+//				xmiWriter
 				);
 	}
 	private static void annotate() throws ResourceInitializationException, UIMAException, IOException {
@@ -163,7 +168,7 @@ public class BaseExperiment {
 				);
 	}
 	
-	private static void readXmi() throws ResourceInitializationException, UIMAException, IOException {		
+	private static void readXmi() throws  ResourceInitializationException, UIMAException, IOException {		
 		CollectionReaderDescription xmiReader = CollectionReaderFactory.createReaderDescription(XmiReader.class, 
 				XmiReader.PARAM_SOURCE_LOCATION,"data",XmiReader.PARAM_LANGUAGE, "en", XmiReader.PARAM_PATTERNS, "*.xmi",XmiReader.PARAM_TYPE_SYSTEM_FILE,"data/TypeSystemManuell.xml");
 		AnalysisEngineDescription eva = createEngineDescription(Evaluation.class);

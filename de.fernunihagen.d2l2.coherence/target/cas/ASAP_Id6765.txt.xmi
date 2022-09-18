@@ -865,8 +865,8 @@
     <types:CFEntity xmi:id="7950" sofa="1" begin="0" end="0" sentenceIndex="4" name="weeds" beginPosition="371" endPosition="376" dependencyType="nmod:withCONJ"/>
     <types:CFEntity xmi:id="7959" sofa="1" begin="0" end="0" sentenceIndex="4" name="snakes" beginPosition="381" endPosition="387" dependencyType="nmod:withCONJ"/>
     <types:CFEntity xmi:id="7968" sofa="1" begin="0" end="0" sentenceIndex="5" name="He" beginPosition="435" endPosition="437" dependencyType="nsubjMAIN"/>
-    <types:CFEntity xmi:id="7977" sofa="1" begin="0" end="0" sentenceIndex="5" name="his" beginPosition="454" endPosition="457" dependencyType="poss"/>
-    <types:CFEntity xmi:id="7986" sofa="1" begin="0" end="0" sentenceIndex="5" name="consciousness" beginPosition="458" endPosition="471" dependencyType="dobj"/>
+    <types:CFEntity xmi:id="7977" sofa="1" begin="0" end="0" sentenceIndex="5" name="consciousness" beginPosition="458" endPosition="471" dependencyType="dobjMAIN"/>
+    <types:CFEntity xmi:id="7986" sofa="1" begin="0" end="0" sentenceIndex="5" name="his" beginPosition="454" endPosition="457" dependencyType="poss"/>
     <types:CFEntity xmi:id="7995" sofa="1" begin="0" end="0" sentenceIndex="5" name="he" beginPosition="489" endPosition="491" dependencyType="nsubj"/>
     <types:CFEntity xmi:id="8004" sofa="1" begin="0" end="0" sentenceIndex="5" name="journey" beginPosition="517" endPosition="524" dependencyType="dobj"/>
     <types:CFEntity xmi:id="8013" sofa="1" begin="0" end="0" sentenceIndex="6" name="factory" beginPosition="552" endPosition="559" dependencyType="nsubjMAIN"/>
@@ -930,7 +930,7 @@
     <types:Entity xmi:id="8567" sofa="1" begin="0" end="0" sentenceIndex="4" beginPosition="371" endPosition="376" name="weeds" dependencyType="nmod:withCONJ" firstMention="" corefId=""/>
     <types:Entity xmi:id="8578" sofa="1" begin="0" end="0" sentenceIndex="4" beginPosition="381" endPosition="387" name="snakes" dependencyType="nmod:withCONJ" firstMention="" corefId=""/>
     <types:Entity xmi:id="8589" sofa="1" begin="0" end="0" sentenceIndex="5" beginPosition="435" endPosition="437" name="He" dependencyType="nsubjMAIN" firstMention="cyclist's" corefId="5"/>
-    <types:Entity xmi:id="8600" sofa="1" begin="0" end="0" sentenceIndex="5" beginPosition="458" endPosition="471" name="consciousness" dependencyType="dobj" firstMention="consciousness" corefId="13"/>
+    <types:Entity xmi:id="8600" sofa="1" begin="0" end="0" sentenceIndex="5" beginPosition="458" endPosition="471" name="consciousness" dependencyType="dobjMAIN" firstMention="consciousness" corefId="13"/>
     <types:Entity xmi:id="8611" sofa="1" begin="0" end="0" sentenceIndex="5" beginPosition="517" endPosition="524" name="journey" dependencyType="dobj" firstMention="journey" corefId="14"/>
     <types:Entity xmi:id="8622" sofa="1" begin="0" end="0" sentenceIndex="6" beginPosition="552" endPosition="559" name="factory" dependencyType="nsubjMAIN" firstMention="" corefId=""/>
     <types:Entity xmi:id="8633" sofa="1" begin="0" end="0" sentenceIndex="6" beginPosition="540" endPosition="545" name="grape" dependencyType="nn" firstMention="grape" corefId="15"/>

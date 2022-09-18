@@ -48,48 +48,74 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 //			System.out.println("----Sentence "+sentenceIndex +"---: "+sentence.getCoveredText() );
 			final Collection<Token> tokens = JCasUtil.selectCovered(aJCas, Token.class, sentence);
 			for (Token t: tokens) {
-//				System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue());
+//				System.out.println(t.getCoveredText() + " " + t.getPos().getCoarseValue() + " " + t.getLemmaValue()+" "+t.getPosValue());
 			}
 			final Collection<Dependency> dependencies = JCasUtil.selectCovered(aJCas, Dependency.class, sentence);
 			// identify root verb
-			RootVerb rv = new RootVerb();
+			RootVerb rv = null;
 			for (Dependency dep : dependencies) {
 				if (dep.getDependencyType().equals("root") && dep.getDependent().getPos().getCoarseValue().equals("VERB")) { // because sometime "root" be a noun.
+					rv = new RootVerb();
 					rv.setBeginPosition(dep.getDependent().getBegin());
 					rv.setEndPosition(dep.getDependent().getEnd());
 					rv.setName(dep.getDependent().getCoveredText());
 					break;
-				}else {
-					if (dep.getDependencyType().equals("root")){
-						rv.setBeginPosition(dep.getDependent().getBegin());
-						rv.setEndPosition(dep.getDependent().getEnd());
-						rv.setName(dep.getDependent().getCoveredText());
-						break;
+				}
+			}
+			
+			//solve xcomp exp: I am going to summarize the arguments ---> root = summarize, not going
+			RootVerb rv2 = null;
+			if(rv != null) {
+				for (Dependency dep : dependencies) {
+					if(dep.getGovernor().getCoveredText().equals(rv.getName())&& dep.getGovernor().getBegin()==rv.getBeginPosition() && dep.getDependencyType().equals("xcomp")) {
+						rv2 = new RootVerb();
+						rv2.setBeginPosition(dep.getDependent().getBegin());
+						rv2.setEndPosition(dep.getDependent().getEnd());
+						rv2.setName(dep.getDependent().getCoveredText());
 					}
 				}
 			}
+//			System.out.println("rv2: "+rv2);			
 //			System.out.println("RV:" + rv.getName());
 			//CFs of main clause
 			ArrayList<ForwardLookingCenterEntity> cfOfMainClause = new ArrayList<>();
-			for (Dependency dep : deps) {
-				if(dep.getGovernor().getCoveredText().equals(rv.getName())&& dep.getGovernor().getBegin() == rv.getBeginPosition()) {
-					if(dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")
-							|| (dep.getDependent().getPos().getCoveredText().toLowerCase().equals("this") && dep.getDependencyType().contains("nsubj"))) {
-						ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType()+"MAIN");						
-						if(!cfOfMainClause.contains(e)) {
-							cfOfMainClause.add(e);
+			if (rv2!=null) {
+				for (Dependency dep : deps) {
+					if(dep.getGovernor().getCoveredText().equals(rv2.getName())&& dep.getGovernor().getBegin() == rv2.getBeginPosition()) {
+						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")
+								|| (dep.getDependent().getPos().getCoveredText().toLowerCase().equals("this") && dep.getDependencyType().contains("nsubj"))) && !dep.getDependent().getPosValue().equals("WP")) { 
+							ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType()+"MAIN");						
+							if(!cfOfMainClause.contains(e)) {
+								cfOfMainClause.add(e);
+							}
+							
 						}
-						
+							
 					}
-						
+				}
+			}
+			
+			if(rv != null) {
+				for (Dependency dep : deps) {
+					if(dep.getGovernor().getCoveredText().equals(rv.getName())&& dep.getGovernor().getBegin() == rv.getBeginPosition()) {
+						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")
+								|| (dep.getDependent().getPos().getCoveredText().toLowerCase().equals("this") && dep.getDependencyType().contains("nsubj")))&&!dep.getDependent().getPosValue().equals("WP")) {
+							ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType()+"MAIN");						
+							if(!cfOfMainClause.contains(e)) {
+								cfOfMainClause.add(e);
+							}
+							
+						}
+							
+					}
 				}
 			}
 			//create a list of forward-looking centers
 			ArrayList<ForwardLookingCenterEntity> forwardLookingCenters = new ArrayList<>();
 			for (Dependency dep : dependencies) {
-				if(dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON") || 
+				if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON") || 
 						(dep.getDependent().getPos().getCoveredText().toLowerCase().equals("this") && dep.getDependencyType().contains("nsubj")) || 
-						(dep.getDependent().getPos().getCoveredText().toLowerCase().equals("that") && dep.getDependencyType().contains("nsubj")) ) { //exception for this, that as nsubj
+						(dep.getDependent().getPos().getCoveredText().toLowerCase().equals("that") && dep.getDependencyType().contains("nsubj"))) && !dep.getDependent().getPosValue().equals("WP") ) { //exception for this, that as nsubj
 					ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType());
 					
 					if(!forwardLookingCenters.contains(e)) {
@@ -112,7 +138,6 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			ArrayList<String> namedEntitys = new ArrayList<>();
 			for (NamedEntity ner : ners) {
 				if (!ner.getValue().equals("NUMBER")&&!ner.getValue().equals("PERSON")) {
-//					System.out.println("NEr:"+ner.getCoveredText()+ " " +ner.getValue());
 					namedEntitys.add(ner.getCoveredText());
 					
 				}				

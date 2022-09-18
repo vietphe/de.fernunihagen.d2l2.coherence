@@ -1096,7 +1096,7 @@
     <types:CFEntity xmi:id="9805" sofa="1" begin="0" end="0" sentenceIndex="3" name="wind" beginPosition="244" endPosition="248" dependencyType="nmod:inMAIN"/>
     <types:CFEntity xmi:id="9814" sofa="1" begin="0" end="0" sentenceIndex="4" name="back" beginPosition="254" endPosition="258" dependencyType="nsubjpassMAIN"/>
     <types:CFEntity xmi:id="9823" sofa="1" begin="0" end="0" sentenceIndex="4" name="blimp" beginPosition="266" endPosition="271" dependencyType="nmod:of"/>
-    <types:CFEntity xmi:id="9832" sofa="1" begin="0" end="0" sentenceIndex="4" name="sky" beginPosition="328" endPosition="331" dependencyType="nmod:in"/>
+    <types:CFEntity xmi:id="9832" sofa="1" begin="0" end="0" sentenceIndex="4" name="sky" beginPosition="328" endPosition="331" dependencyType="nmod:inMAIN"/>
     <types:CFEntity xmi:id="9841" sofa="1" begin="0" end="0" sentenceIndex="5" name="obstacle" beginPosition="342" endPosition="350" dependencyType="nsubjMAIN"/>
     <types:CFEntity xmi:id="9850" sofa="1" begin="0" end="0" sentenceIndex="5" name="design" beginPosition="364" endPosition="370" dependencyType="rootMAIN"/>
     <types:CFEntity xmi:id="9859" sofa="1" begin="0" end="0" sentenceIndex="5" name="mast" beginPosition="378" endPosition="382" dependencyType="nmod:ofMAIN"/>
@@ -1180,7 +1180,7 @@
     <types:Entity xmi:id="10585" sofa="1" begin="0" end="0" sentenceIndex="3" beginPosition="244" endPosition="248" name="wind" dependencyType="nmod:inMAIN" firstMention="" corefId=""/>
     <types:Entity xmi:id="10596" sofa="1" begin="0" end="0" sentenceIndex="4" beginPosition="254" endPosition="258" name="back" dependencyType="nsubjpassMAIN" firstMention="back" corefId="18"/>
     <types:Entity xmi:id="10607" sofa="1" begin="0" end="0" sentenceIndex="4" beginPosition="266" endPosition="271" name="blimp" dependencyType="nmod:of" firstMention="blimp" corefId="10"/>
-    <types:Entity xmi:id="10618" sofa="1" begin="0" end="0" sentenceIndex="4" beginPosition="328" endPosition="331" name="sky" dependencyType="nmod:in" firstMention="sky" corefId="13"/>
+    <types:Entity xmi:id="10618" sofa="1" begin="0" end="0" sentenceIndex="4" beginPosition="328" endPosition="331" name="sky" dependencyType="nmod:inMAIN" firstMention="sky" corefId="13"/>
     <types:Entity xmi:id="10629" sofa="1" begin="0" end="0" sentenceIndex="5" beginPosition="342" endPosition="350" name="obstacle" dependencyType="nsubjMAIN" firstMention="" corefId=""/>
     <types:Entity xmi:id="10640" sofa="1" begin="0" end="0" sentenceIndex="5" beginPosition="364" endPosition="370" name="design" dependencyType="rootMAIN" firstMention="design" corefId="20"/>
     <types:Entity xmi:id="10651" sofa="1" begin="0" end="0" sentenceIndex="5" beginPosition="378" endPosition="382" name="mast" dependencyType="nmod:ofMAIN" firstMention="mooring" corefId="21"/>
