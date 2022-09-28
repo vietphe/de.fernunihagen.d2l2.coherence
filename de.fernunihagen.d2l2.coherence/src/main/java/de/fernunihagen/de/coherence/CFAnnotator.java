@@ -63,6 +63,18 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				}
 			}
 			
+			// solve problem "The television advertising is sometimes very funny and beautiful for the kids". hier funny -->roof
+			if(rv == null) {
+				for (Dependency dep : dependencies) {
+					if (dep.getDependencyType().equals("root") ) { // because sometime "root" be a noun.
+						rv = new RootVerb();
+						rv.setBeginPosition(dep.getDependent().getBegin());
+						rv.setEndPosition(dep.getDependent().getEnd());
+						rv.setName(dep.getDependent().getCoveredText());
+						break;
+					}
+				}
+			}
 			//solve xcomp exp: I am going to summarize the arguments ---> root = summarize, not going
 			RootVerb rv2 = null;
 			if(rv != null) {
@@ -82,8 +94,8 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			if (rv2!=null) {
 				for (Dependency dep : deps) {
 					if(dep.getGovernor().getCoveredText().equals(rv2.getName())&& dep.getGovernor().getBegin() == rv2.getBeginPosition()) {
-						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")
-								|| (dep.getDependent().getPos().getCoveredText().toLowerCase().equals("this") && dep.getDependencyType().contains("nsubj"))) && !dep.getDependent().getPosValue().equals("WP")) { 
+						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")) 
+								&& !dep.getDependent().getPosValue().equals("WP") && !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your") ) { 
 							ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType()+"MAIN");						
 							if(!cfOfMainClause.contains(e)) {
 								cfOfMainClause.add(e);
@@ -98,8 +110,8 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			if(rv != null) {
 				for (Dependency dep : deps) {
 					if(dep.getGovernor().getCoveredText().equals(rv.getName())&& dep.getGovernor().getBegin() == rv.getBeginPosition()) {
-						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")
-								|| (dep.getDependent().getPos().getCoveredText().toLowerCase().equals("this") && dep.getDependencyType().contains("nsubj")))&&!dep.getDependent().getPosValue().equals("WP")) {
+						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON"))
+								&&!dep.getDependent().getPosValue().equals("WP")&& !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your")) {
 							ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType()+"MAIN");						
 							if(!cfOfMainClause.contains(e)) {
 								cfOfMainClause.add(e);
@@ -113,9 +125,8 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			//create a list of forward-looking centers
 			ArrayList<ForwardLookingCenterEntity> forwardLookingCenters = new ArrayList<>();
 			for (Dependency dep : dependencies) {
-				if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON") || 
-						(dep.getDependent().getPos().getCoveredText().toLowerCase().equals("this") && dep.getDependencyType().contains("nsubj")) || 
-						(dep.getDependent().getPos().getCoveredText().toLowerCase().equals("that") && dep.getDependencyType().contains("nsubj"))) && !dep.getDependent().getPosValue().equals("WP") ) { //exception for this, that as nsubj
+				if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")) 
+						&& !dep.getDependent().getPosValue().equals("WP")&& !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your") ) { //exception for this, that as nsubj
 					ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType());
 					
 					if(!forwardLookingCenters.contains(e)) {

@@ -83,6 +83,8 @@ public class CoreferenceAnnotator extends JCasAnnotator_ImplBase {
 					ce.setName(temp[0]);
 					ce.setBeginPosition(Integer.valueOf(temp[1]));
 					ce.setEndPosition(Integer.valueOf(temp[2]));
+					ce.setBegin(Integer.valueOf(temp[1]));
+					ce.setEnd(Integer.valueOf(temp[2]));
 					ce.setFirstMention(firstMention);
 					ce.addToIndexes();
 //					System.out.print(temp[0]+" "+"-");

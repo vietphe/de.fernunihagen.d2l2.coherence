@@ -97,7 +97,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				}
 			}
 		}
-		System.out.println("---CoreferenceEntitys do not match CFEntitys---: "+ corefNotMatchWithCF.size()+" out of "+coreferenceEntities.size()+".");
+//		System.out.println("---CoreferenceEntitys do not match CFEntitys---: "+ corefNotMatchWithCF.size()+" out of "+coreferenceEntities.size()+".");
 		for (CoreferenceEntity e : corefNotMatchWithCF) {
 //			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getFirstMention() );
 		}
@@ -108,7 +108,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				}
 			}
 		}
-		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
+//		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
 		for (CFEntity e : cFNotMatchWithCoref) {
 //			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
 		}
@@ -127,9 +127,9 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 //					System.out.println("CF: "+entity.getSentenceIndex()+" "+ entity.getName() + " "+entity.getBeginPosition()+":"+entity.getEndPosition()+" "+entity.getDependencyType()); 
 		} 
 				
-		System.out.println("Spezialfall mit NER: "+ numOfNER);
-		System.out.println("Spezialfall mit And/Or: "+ numOfAndOr);	
-		System.out.println();
+//		System.out.println("Spezialfall mit NER: "+ numOfNER);
+//		System.out.println("Spezialfall mit And/Or: "+ numOfAndOr);	
+//		System.out.println();
 		
 		int numOfPronoun = 0;
 		Collection<Token> tokens = JCasUtil.select(aJCas, Token.class);
@@ -138,7 +138,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 				numOfPronoun++;
 			}
 		}
-		System.out.println("Num of pronoun: "+numOfPronoun);
+//		System.out.println("Num of pronoun: "+numOfPronoun);
 	}
 	@Override
 	public void destroy() {
