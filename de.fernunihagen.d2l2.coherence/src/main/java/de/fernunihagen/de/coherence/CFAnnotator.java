@@ -19,6 +19,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.fernunihagen.d2l2.coherence.classes.CFEntityWithCoref;
 import de.fernunihagen.d2l2.coherence.classes.ForwardLookingCenterEntity;
 import de.fernunihagen.d2l2.coherence.classes.RootVerb;
 import de.fernunihagen.d2l2.coherence.types.CFEntity;
@@ -95,7 +96,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				for (Dependency dep : deps) {
 					if(dep.getGovernor().getCoveredText().equals(rv2.getName())&& dep.getGovernor().getBegin() == rv2.getBeginPosition()) {
 						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")) 
-								&& !dep.getDependent().getPosValue().equals("WP") && !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your") ) { 
+							&& !dep.getDependent().getPosValue().equals("WP") && !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your") ) { 
 							ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType()+"MAIN");						
 							if(!cfOfMainClause.contains(e)) {
 								cfOfMainClause.add(e);
@@ -126,7 +127,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			ArrayList<ForwardLookingCenterEntity> forwardLookingCenters = new ArrayList<>();
 			for (Dependency dep : dependencies) {
 				if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")) 
-						&& !dep.getDependent().getPosValue().equals("WP")&& !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your") ) { //exception for this, that as nsubj
+						&& !dep.getDependent().getPosValue().equals("WP")&& !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your")) { //exception for this, that as nsubj
 					ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType());
 					
 					if(!forwardLookingCenters.contains(e)) {
@@ -258,7 +259,19 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 					}
 				}
 			}
-			
+			//list of often incorrect POS
+			ArrayList<String> oftenIncorrectPOS = new ArrayList<>();
+			oftenIncorrectPOS.add("online");
+			for (Iterator iterator = forwardLookingCenters.iterator(); iterator.hasNext();) {
+				ForwardLookingCenterEntity e = (ForwardLookingCenterEntity) iterator.next();
+				for (String s : oftenIncorrectPOS) {
+					if (e.getName().toLowerCase().equals(s)) {
+						iterator.remove();
+					}
+				}
+				
+			}		
+					
 			ArrayList<ForwardLookingCenterEntity> possibleSubject = new ArrayList<>();
 			ArrayList<ForwardLookingCenterEntity> possibleObject = new ArrayList<>();
 			ArrayList<ForwardLookingCenterEntity> possibleOthers = new ArrayList<>();
