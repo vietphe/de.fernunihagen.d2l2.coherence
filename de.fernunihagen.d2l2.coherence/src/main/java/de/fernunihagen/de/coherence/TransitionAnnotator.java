@@ -111,14 +111,7 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 //			if((e.getName().toLowerCase().equals("it"))&& (e.getFirstMention().toLowerCase().equals(e.getName().toLowerCase())||e.getFirstMention().equals(""))) {
 //				iterator.remove();
 //			}
-//		}
-		for (Iterator iterator = cFEntityWithCoref.iterator(); iterator.hasNext();) {
-			CFEntityWithCoref e = (CFEntityWithCoref) iterator.next();
-			if (e.getName().toLowerCase().equals("it")) {
-				iterator.remove();
-			}
-		}				
-		
+//		}		
 		//convert cfes to ArrayList to get last sentence index
 		ArrayList<CFEntity> cfesList = new ArrayList<>();
 		for (CFEntity entity : cfes) {

@@ -96,7 +96,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				for (Dependency dep : deps) {
 					if(dep.getGovernor().getCoveredText().equals(rv2.getName())&& dep.getGovernor().getBegin() == rv2.getBeginPosition()) {
 						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")) 
-							&& !dep.getDependent().getPosValue().equals("WP") && !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your") ) { 
+							&& !dep.getDependent().getPosValue().equals("WP") ) { 
 							ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType()+"MAIN");						
 							if(!cfOfMainClause.contains(e)) {
 								cfOfMainClause.add(e);
@@ -112,7 +112,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				for (Dependency dep : deps) {
 					if(dep.getGovernor().getCoveredText().equals(rv.getName())&& dep.getGovernor().getBegin() == rv.getBeginPosition()) {
 						if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON"))
-								&&!dep.getDependent().getPosValue().equals("WP")&& !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your")) {
+								&&!dep.getDependent().getPosValue().equals("WP")) {
 							ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType()+"MAIN");						
 							if(!cfOfMainClause.contains(e)) {
 								cfOfMainClause.add(e);
@@ -127,7 +127,7 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 			ArrayList<ForwardLookingCenterEntity> forwardLookingCenters = new ArrayList<>();
 			for (Dependency dep : dependencies) {
 				if((dep.getDependent().getPos().getCoarseValue().equals("PROPN")||dep.getDependent().getPos().getCoarseValue().equals("NOUN")||dep.getDependent().getPos().getCoarseValue().equals("PRON")) 
-						&& !dep.getDependent().getPosValue().equals("WP")&& !dep.getDependent().getCoveredText().toLowerCase().equals("you")&& !dep.getDependent().getCoveredText().toLowerCase().equals("your")) { //exception for this, that as nsubj
+						&& !dep.getDependent().getPosValue().equals("WP")) { 
 					ForwardLookingCenterEntity e = new ForwardLookingCenterEntity(dep.getDependent().getBegin(), dep.getDependent().getEnd(), dep.getDependent().getCoveredText(), dep.getDependencyType());
 					
 					if(!forwardLookingCenters.contains(e)) {
@@ -270,7 +270,33 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 					}
 				}
 				
-			}		
+			}
+			//list of special cases 
+			ArrayList<String> specialCases = new ArrayList<>();
+			specialCases.add("it");
+			specialCases.add("this");
+			specialCases.add("that");
+			specialCases.add("one");
+			specialCases.add("you");
+			for (Iterator iterator = forwardLookingCenters.iterator(); iterator.hasNext();) {
+				ForwardLookingCenterEntity e = (ForwardLookingCenterEntity) iterator.next();
+				for (String s : specialCases) {
+					if (e.getName().toLowerCase().equals(s)) {
+						iterator.remove();
+					}
+				}
+				
+			}
+			// !!!!specific for ASAP dataset!!!
+			for (Iterator iterator = forwardLookingCenters.iterator(); iterator.hasNext();) {
+				ForwardLookingCenterEntity e = (ForwardLookingCenterEntity) iterator.next();
+				for (String s : oftenIncorrectPOS) {
+					if (e.getName().contains("@")) {
+						iterator.remove();
+					}
+				}
+				
+			}
 					
 			ArrayList<ForwardLookingCenterEntity> possibleSubject = new ArrayList<>();
 			ArrayList<ForwardLookingCenterEntity> possibleObject = new ArrayList<>();
