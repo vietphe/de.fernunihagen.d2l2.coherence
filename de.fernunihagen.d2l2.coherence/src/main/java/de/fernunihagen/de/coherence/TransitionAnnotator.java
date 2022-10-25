@@ -63,7 +63,19 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			}
 			
 		}
-
+		//remove "'s" exp. Chavelier's in first Mention
+		for (CorefEntity e : corefEntities) {
+			if(e.getFirstMention().toLowerCase().contains("'s")) {
+				e.setFirstMention(e.getFirstMention().replace("'s", ""));
+			}
+		}
+		int maxCorefId = 0;
+		for (CorefEntity e : corefEntities) {
+			if (Integer.parseInt(e.getId())>= maxCorefId) {
+				maxCorefId = Integer.parseInt(e.getId());
+			}
+		}
+		
 		Collection<CFEntity> cfes = JCasUtil.select(aJCas, CFEntity.class);
 		Collection<Sentence> sentences = JCasUtil.select(aJCas, Sentence.class);
 		int numOfSentences = sentences.size();
@@ -77,7 +89,7 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 		
 		for(CFEntityWithCoref e: cFEntityWithCoref) {			
 			for(CorefEntity coreferenceEntity: corefEntities ) {
-				if((e.getBegin()== coreferenceEntity.getBegin())&&(e.getEnd()==coreferenceEntity.getEnd())) {
+				if((e.getBegin()== coreferenceEntity.getBegin())) {
 					e.setId(coreferenceEntity.getId());
 					e.setFirstMention(coreferenceEntity.getFirstMention());
 				}
@@ -101,17 +113,48 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			System.out.println();
 		}
 		System.out.println();
+		//set Id for entites without id
+		for (CFEntityWithCoref e : cFEntityWithCoref) {
+			if (e.getId().equals("")) {
+				e.setId(""+(maxCorefId+1));
+				maxCorefId++;
+			}
+		}
+		//solve same surface noun
+		for (int i = 0; i < cFEntityWithCoref.size(); i++) {
+			for (int j = i+1; j < cFEntityWithCoref.size(); j++) {
+				if(!(cFEntityWithCoref.get(i).getName().toLowerCase().equals("he")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("she")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("they")
+						&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("her")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("him")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("them")
+						&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("her")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("his")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("their")
+						&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("hers")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("itself")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("theirs")
+						&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("herself")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("himself")&&cFEntityWithCoref.get(i).getName().toLowerCase().equals("themselves"))
+						&&!cFEntityWithCoref.get(i).getName().toLowerCase().equals("something")&&!cFEntityWithCoref.get(i).getName().toLowerCase().equals("anything")&&!cFEntityWithCoref.get(i).getName().toLowerCase().equals("everything")) {
+					
+					if (cFEntityWithCoref.get(i).getName().toLowerCase().equals(cFEntityWithCoref.get(j).getName().toLowerCase())||cFEntityWithCoref.get(i).getName().toLowerCase().equals(cFEntityWithCoref.get(j).getFirstMention().toLowerCase())) {
+						cFEntityWithCoref.get(j).setId(cFEntityWithCoref.get(i).getId());
+					}
+				}
+				
+			}
+		}
+
+		System.out.println("CFs with Coref new: ");
+		for (int i = 1; i <= numOfSentences; i++) {
+			System.out.print("CF of ["+i+"]: ");
+			for (CFEntityWithCoref e : cFEntityWithCoref) {
+				if(e.getSentenceIndex() == i) {
+					if(e.getFirstMention().equals("")) {
+						System.out.print(e.getName()+" ("+e.getId()+")"+" - ");
+					}else {
+						System.out.print(e.getName()+" ("+e.getId()+")"+ "("+e.getDependencyType()+") "+ "("+e.getFirstMention()+") "+" - ");
+					}
+					
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
 		
-		//remove expletive "it" and it as sentence		
-//		for (Iterator iterator = cFEntityWithCoref.iterator(); iterator.hasNext();) {
-//			CFEntityWithCoref e = (CFEntityWithCoref) iterator.next();
-//			if (e.getName().toLowerCase().equals("it") && e.getFirstMention().equals("AsSentence") ) {
-//				iterator.remove();
-//			}
-//			if((e.getName().toLowerCase().equals("it"))&& (e.getFirstMention().toLowerCase().equals(e.getName().toLowerCase())||e.getFirstMention().equals(""))) {
-//				iterator.remove();
-//			}
-//		}		
 		//convert cfes to ArrayList to get last sentence index
 		ArrayList<CFEntity> cfesList = new ArrayList<>();
 		for (CFEntity entity : cfes) {
@@ -139,6 +182,7 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			}			
 			cfeMap.put(i, aList);
 		}
+
 		//print CF:
 		for (Map.Entry<Integer, ArrayList<CFEntityWithCoref>> entry : cfeMap.entrySet()) {
 			Integer key = entry.getKey();
@@ -150,7 +194,7 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			System.out.println();
 			
 		}
-
+		
 		//add to new uima-type  Entity  
 		for (Map.Entry<Integer, ArrayList<CFEntityWithCoref>> entry : cfeMap.entrySet()) {
 			
@@ -194,19 +238,20 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			entity.addToIndexes();
 		}		
 		//Print CP
-		System.out.println("CPs: ");
-		for (Map.Entry<Integer, CFEntityWithCoref> entry : cPs.entrySet()) {
-			Integer key = entry.getKey();
-			CFEntityWithCoref val = entry.getValue();
-			System.out.print(key+": ");
-			System.out.println(val.getName()+"("+val.getBegin()+")");
-			
-		}
+//		System.out.println("CPs: ");
+//		for (Map.Entry<Integer, CFEntityWithCoref> entry : cPs.entrySet()) {
+//			Integer key = entry.getKey();
+//			CFEntityWithCoref val = entry.getValue();
+//			System.out.print(key+": ");
+//			System.out.println(val.getName()+"("+val.getBegin()+")");
+//			
+//		}
 		
 		
 		//list of CBs
 		Map<Integer,CFEntityWithCoref> cBs = new HashMap<>();
 		CFEntityWithCoref undefinedEntity = new CFEntityWithCoref(-1,-1,-1,"undefined","","","");
+		//set CB for the first sentence
 		cBs.put(1, undefinedEntity);
 		for (int i = 1; i < cfeMap.size(); i++) {
 			CFEntityWithCoref cB = undefinedEntity;
@@ -215,10 +260,7 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			loop1:
 			for (CFEntityWithCoref e1 : cFOfPreviousSentence) {
 				for (CFEntityWithCoref e2 : cFOfCurentSentence) {
-					if(e1.equals(e2)&&!e1.getId().equals("")) {
-						cB = e2;
-						break loop1;
-					} else if (e2.getName().toLowerCase().equals(e1.getName().toLowerCase())&& !(e2.getName().toLowerCase().equals("something")||e2.getName().toLowerCase().equals("anything")||e2.getName().toLowerCase().equals("everything")||e2.getName().toLowerCase().equals("things")) ) {
+					if(e1.equals(e2)&& !(e2.getName().toLowerCase().equals("something")||e2.getName().toLowerCase().equals("anything")||e2.getName().toLowerCase().equals("everything")||e2.getName().toLowerCase().equals("things"))) {
 						cB = e2;
 						break loop1;
 					}
@@ -241,14 +283,14 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 			entity.addToIndexes();
 		}		
 		//Print CBs
-		System.out.println("CBs: ");
-		for (Map.Entry<Integer, CFEntityWithCoref> entry : cBs.entrySet()) {
-			Integer key = entry.getKey();
-			CFEntityWithCoref val = entry.getValue();
-			System.out.print(key+"->");
-			System.out.println(val.getName()+"("+val.getBegin()+")");
-			
-		}
+//		System.out.println("CBs: ");
+//		for (Map.Entry<Integer, CFEntityWithCoref> entry : cBs.entrySet()) {
+//			Integer key = entry.getKey();
+//			CFEntityWithCoref val = entry.getValue();
+//			System.out.print(key+"->");
+//			System.out.println(val.getName()+"("+val.getBegin()+")");
+//			
+//		}
 		ArrayList<Object[]> CpAndCbList = new ArrayList<>();
 		for (int i = 0; i < cPs.size(); i++) {
 			CpAndCbList.add(new Object[] {i+1,cPs.get(i+1),cBs.get(i+1)});
@@ -263,22 +305,22 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 //		}
 //		System.out.println();
 		
-		ArrayList<Object[]> CpAndCbListSurface = new ArrayList<>();
-		for (int i = 0; i < cPs.size(); i++) {
-			String cP = "";
-			String cB= "";
-			if (cPs.get(i+1).getFirstMention().equals("")) {
-				cP= cPs.get(i+1).getName();
-			} else {
-				cP = cPs.get(i+1).getFirstMention();
-			}
-			if (cBs.get(i+1).getFirstMention().equals("")) {
-				cB= cBs.get(i+1).getName();
-			} else {
-				cB = cBs.get(i+1).getFirstMention();
-			}
-			CpAndCbListSurface.add(new Object[] {i+1,cP,cB});
-		}
+//		ArrayList<Object[]> CpAndCbListSurface = new ArrayList<>();
+//		for (int i = 0; i < cPs.size(); i++) {
+//			String cP = "";
+//			String cB= "";
+//			if (cPs.get(i+1).getFirstMention().equals("")) {
+//				cP= cPs.get(i+1).getName();
+//			} else {
+//				cP = cPs.get(i+1).getFirstMention();
+//			}
+//			if (cBs.get(i+1).getFirstMention().equals("")) {
+//				cB= cBs.get(i+1).getName();
+//			} else {
+//				cB = cBs.get(i+1).getFirstMention();
+//			}
+//			CpAndCbListSurface.add(new Object[] {i+1,cP,cB});
+//		}
 				
 //		System.out.println("Cp and Cb surface: ");
 //		for(Object[] o : CpAndCbListSurface) {
@@ -287,92 +329,12 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 //			System.out.println();
 //		}
 //		System.out.println();
-		ArrayList<String> transitions = new ArrayList<>();		
-		for (int i = 1; i < CpAndCbListSurface.size(); i++) {
-			Transition transition = new Transition(aJCas);
-			transition.setSentenceIndex(i+1);
-			if(CpAndCbListSurface.get(i-1)[2].equals("undefined")||CpAndCbListSurface.get(i)[2].equals(CpAndCbListSurface.get(i-1)[2])) {
-				if(CpAndCbListSurface.get(i)[2].equals(CpAndCbListSurface.get(i)[1])) {
-					transition.setName("Continue");
-					transitions.add("Continue");
-				}else {
-					transitions.add("Retain");
-					transition.setName("Retain");
-				}
-			}
-			
-			if(!CpAndCbListSurface.get(i)[2].equals(CpAndCbListSurface.get(i-1)[2])&&!CpAndCbListSurface.get(i-1)[2].equals("undefined")) {
-				if(CpAndCbListSurface.get(i)[2].equals(CpAndCbListSurface.get(i)[1])) {
-					transitions.add("Smooth-Shift");
-					transition.setName("Smooth-Shift");
-				}else {
-					transitions.add("Rough-Shift");
-					transition.setName("Rough-Shift");
-				}
-			}
-			transition.addToIndexes();
-		
-		}
-		
-//		ArrayList<Object[]> CpAndCbList = new ArrayList<>();
-//		//add Cp and Cb for first sentence
-//		CpAndCbList.add(new Object[] {1,cfeMap.get(1).get(0).getName(),new CFEntityWithCoref()});
-//		//Logic for calculation of Cbs
-//		for (int i = 1; i < cfeMap.size(); i++) {
-//			String cB = "undefined";
-//			String cP = "";
-//			if (cfeMap.get(i+1).get(0).getFirstMention().equals("")) {
-//				cP = cfeMap.get(i+1).get(0).getName();
-//			}else {
-//				cP = cfeMap.get(i+1).get(0).getFirstMention();
-//			}
-//			ArrayList<CFEntityWithCoref> cFOfCurentSentence = cfeMap.get(i+1);
-//			ArrayList<CFEntityWithCoref> cFOfPreviousSentence = cfeMap.get(i);
-//			innerloop1:
-//			for (CFEntityWithCoref e1 : cFOfPreviousSentence) {
-//				String e1Name = "";
-//				if (e1.getFirstMention().equals("")) {
-//					e1Name = e1.getName();
-//				}
-//				else {
-//					e1Name = e1.getFirstMention();
-//				}
-//				
-//				innerloop2:
-//				for (CFEntityWithCoref e2 : cFOfCurentSentence) {
-//					
-//					String e2Name = "";
-//					
-//					if (e2.getFirstMention().equals("")) {
-//						e2Name = e2.getName();
-//					}
-//					else {
-//						e2Name = e2.getFirstMention();
-//					}
-//					if (e1Name.equals(e2Name)&&!e1Name.toLowerCase().equals("it")&&!e1Name.toLowerCase().equals("this")&&!e1Name.toLowerCase().equals("that")
-//							&&!e1Name.toLowerCase().equals("something")) { //to eliminate the case that "it" and "this" don't refer to anything but the words are the same
-//						cB = e2Name;
-//						break innerloop1;
-//					}
-//				}
-//			}
-//			CpAndCbList.add(new Object[] {i+1,cP,cB});
-//		}
-		
-//		System.out.println("Cp and Cb: ");
-//		for(Object[] o : CpAndCbList) {
-//			System.out.print("["+o[0]+"]: ");
-//			System.out.print(o[1]+" ");
-//			System.out.print(o[2]+" ");
-//			System.out.println();
-//		}
-//		System.out.println();
 //		ArrayList<String> transitions = new ArrayList<>();		
-//		for (int i = 1; i < CpAndCbList.size(); i++) {
+//		for (int i = 1; i < CpAndCbListSurface.size(); i++) {
 //			Transition transition = new Transition(aJCas);
 //			transition.setSentenceIndex(i+1);
-//			if(((CFEntityWithCoref) CpAndCbList.get(i-1)[2]).getName().equals("undefined")||(((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals(((CFEntityWithCoref)CpAndCbList.get(i-1)[2]).getId()))&&!((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals("")) {
-//				if(((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals(((CFEntityWithCoref) CpAndCbList.get(i)[1]).getId())&&!((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals("")) {
+//			if(CpAndCbListSurface.get(i-1)[2].equals("undefined")||CpAndCbListSurface.get(i)[2].equals(CpAndCbListSurface.get(i-1)[2])) {
+//				if(CpAndCbListSurface.get(i)[2].equals(CpAndCbListSurface.get(i)[1])) {
 //					transition.setName("Continue");
 //					transitions.add("Continue");
 //				}else {
@@ -381,8 +343,8 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 //				}
 //			}
 //			
-//			if(!((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals(((CFEntityWithCoref) CpAndCbList.get(i-1)[2]).getId())&&!((CFEntityWithCoref) CpAndCbList.get(i-1)[2]).getName().equals("undefined")) {
-//				if(((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals(((CFEntityWithCoref) CpAndCbList.get(i)[1]).getId())&& !((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals("") ) {
+//			if(!CpAndCbListSurface.get(i)[2].equals(CpAndCbListSurface.get(i-1)[2])&&!CpAndCbListSurface.get(i-1)[2].equals("undefined")) {
+//				if(CpAndCbListSurface.get(i)[2].equals(CpAndCbListSurface.get(i)[1])) {
 //					transitions.add("Smooth-Shift");
 //					transition.setName("Smooth-Shift");
 //				}else {
@@ -391,7 +353,35 @@ public class TransitionAnnotator extends JCasAnnotator_ImplBase {
 //				}
 //			}
 //			transition.addToIndexes();
+//		
 //		}
+		
+
+		ArrayList<String> transitions = new ArrayList<>();		
+		for (int i = 1; i < CpAndCbList.size(); i++) {
+			Transition transition = new Transition(aJCas);
+			transition.setSentenceIndex(i+1);
+			if(((CFEntityWithCoref) CpAndCbList.get(i-1)[2]).getName().equals("undefined")||(((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals(((CFEntityWithCoref)CpAndCbList.get(i-1)[2]).getId()))&&!((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals("")) {
+				if(((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals(((CFEntityWithCoref) CpAndCbList.get(i)[1]).getId())&&!((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals("")) {
+					transition.setName("Continue");
+					transitions.add("Continue");
+				}else {
+					transitions.add("Retain");
+					transition.setName("Retain");
+				}
+			}
+			
+			if(!((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals(((CFEntityWithCoref) CpAndCbList.get(i-1)[2]).getId())&&!((CFEntityWithCoref) CpAndCbList.get(i-1)[2]).getName().equals("undefined")) {
+				if(((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals(((CFEntityWithCoref) CpAndCbList.get(i)[1]).getId())&& !((CFEntityWithCoref) CpAndCbList.get(i)[2]).getId().equals("") ) {
+					transitions.add("Smooth-Shift");
+					transition.setName("Smooth-Shift");
+				}else {
+					transitions.add("Rough-Shift");
+					transition.setName("Rough-Shift");
+				}
+			}
+			transition.addToIndexes();
+		}
 	}
 }
 

@@ -2,7 +2,9 @@ package de.fernunihagen.de.coherence;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -18,6 +20,7 @@ import de.fernunihagen.d2l2.coherence.types.Entity;
 import de.fernunihagen.d2l2.coherence.types.Transition;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
 
 public class Analyzer extends JCasAnnotator_ImplBase {
 	public static final String PARAM_OUTPUT_FILE = "outputFile";
@@ -35,19 +38,60 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 //		String essayText = aJCas.getDocumentText();
 //		System.out.println(essayText);
-		Collection<Sentence> sentences = JCasUtil.select(aJCas, Sentence.class);
-		int numOfSentences = sentences.size();
 		Collection<CFEntity> cfEntities = JCasUtil.select(aJCas, CFEntity.class);
 		Collection<Entity> entities = JCasUtil.select(aJCas, Entity.class); 
-//		for (Entity entity : entities) {
-//			System.out.println(entity.getSentenceIndex()+ "->"+ entity.getName()); 
-//		}
-		System.out.println("Transitions: ");
-		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
-		for (Transition transition : transitions) {
-		  		System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName()); 
+		int max= 0;
+		for (Entity entity : entities) {
+			if (max <= Integer.parseInt(entity.getCorefId())) {
+				max = Integer.parseInt(entity.getCorefId());
+			}
+//			System.out.println(entity.getSentenceIndex()+ "->"+ entity.getName()+" "+ entity.getCorefId()); 
 		}
-		System.out.println();
+		
+		Map<Integer,ArrayList<Entity>> map = new HashMap<>();
+		for (int i = 1; i <= max; i++) {
+			
+			ArrayList<Entity> aList = new ArrayList<>(); 
+			for (Entity e : entities) {
+				if(Integer.parseInt(e.getCorefId()) == i) {
+					aList.add(e);
+					
+				}
+				
+			}
+			if (!aList.isEmpty()) {
+				map.put(i, aList);
+			}
+			
+		}
+		
+		for (Map.Entry<Integer, ArrayList<Entity>> entry : map.entrySet()) {
+			Integer key = entry.getKey();
+			ArrayList<Entity> val = entry.getValue();
+			System.out.print(key+" "+":");
+			for (Entity entity : val) {
+				System.out.print(entity.getName()+"-");
+			}
+			System.out.println();
+		}
+		System.out.println("Num of Coref kette: "+ map.size());
+		int max_len = 0;
+		for (Map.Entry<Integer, ArrayList<Entity>> entry : map.entrySet()) {
+			ArrayList<Entity> val = entry.getValue();
+			if(val.size()>= max_len) {
+				max_len = val.size();
+			}
+		
+		}
+		System.out.println("Max leng of Coref kette: "+ max_len);
+		
+		
+//		System.out.println("Transitions: ");
+//		Collection<Transition> transitions = JCasUtil.select(aJCas, Transition.class); 
+//		for (Transition transition : transitions) {
+//		  		System.out.println(transition.getSentenceIndex()-1+ "->"+ transition.getSentenceIndex()+" "+ transition.getName()); 
+//		}
+//		System.out.println();
 		
 		Collection<CoreferenceEntity> coreferenceEntities = JCasUtil.select(aJCas, CoreferenceEntity.class);
 		int highestCorefId = 0;
@@ -109,10 +153,10 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 			}
 		}
 //		System.out.println("---CFEntitys do not match CoreferenceEntitys---: "+ cFNotMatchWithCoref.size()+" out of "+cfEntities.size()+".");
-		for (CFEntity e : cFNotMatchWithCoref) {
-//			System.out.println(e.getName()+ " "+ e.getBeginPosition()+ "-> " + e.getDependencyType() );
-		}
-		System.out.println();
+//		for (CFEntity e : cFNotMatchWithCoref) {
+//			System.out.print(e.getName()+"-" );
+//		}
+//		System.out.println();
 		//calculate number of 3 Spezialfälle
 		int numOfNER = 0;
 		int numOfAndOr = 0;
@@ -139,6 +183,7 @@ public class Analyzer extends JCasAnnotator_ImplBase {
 			}
 		}
 //		System.out.println("Num of pronoun: "+numOfPronoun);
+		
 	}
 	@Override
 	public void destroy() {

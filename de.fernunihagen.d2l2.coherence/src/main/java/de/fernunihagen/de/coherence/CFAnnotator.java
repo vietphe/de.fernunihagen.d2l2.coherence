@@ -271,11 +271,21 @@ public class CFAnnotator extends JCasAnnotator_ImplBase {
 				}
 				
 			}
+//			int numOfItCf = 0;
+//			for (ForwardLookingCenterEntity e : forwardLookingCenters) {
+//				if(e.getName().toLowerCase().equals("it")) {
+//					numOfItCf++;
+//				}	
+//			}
+//			System.out.println("Num Of It in CF: "+ numOfItCf);
+//			
 			//list of special cases 
 			ArrayList<String> specialCases = new ArrayList<>();
 			specialCases.add("it");
 			specialCases.add("this");
+			specialCases.add("these");
 			specialCases.add("that");
+			specialCases.add("those");
 			specialCases.add("one");
 			specialCases.add("you");
 			for (Iterator iterator = forwardLookingCenters.iterator(); iterator.hasNext();) {
